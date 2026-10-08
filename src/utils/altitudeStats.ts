@@ -5,6 +5,10 @@ export function sumCompletedHoursByCategory(
   templates: BlockTemplate[]
 ): Record<string, number> {
   const catTotals: Record<string, number> = {};
+  const templatesById = new Map<string, BlockTemplate>();
+  for (const template of templates) {
+    if (!templatesById.has(template.id)) templatesById.set(template.id, template);
+  }
 
   plans.forEach((plan) => {
     plan.blocks?.forEach((b) => {
@@ -15,7 +19,7 @@ export function sumCompletedHoursByCategory(
         catId = b.oneOffCategoryId;
         duration = b.oneOffDuration;
       } else if (b.templateId) {
-        const t = templates.find((temp) => temp.id === b.templateId);
+        const t = templatesById.get(b.templateId);
         if (t) {
           catId = t.categoryId;
           duration = t.durationHours;
