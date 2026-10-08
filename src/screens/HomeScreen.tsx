@@ -27,6 +27,8 @@ import OnboardingModal from '../components/OnboardingModal';
 import type { RootStackParamList } from '../types/navigation';
 import { getCategoryDisplayName } from '../utils/categoryUtils';
 import { formatCompletionDate } from '../utils/date';
+import { sumCompletedHoursByCategory } from '../utils/altitudeStats';
+import type { WeeklyPlan } from '../types';
 import { useLocale } from '../store/LocaleContext';
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -51,31 +53,10 @@ export default function HomeScreen({ navigation }: HomeProps) {
       );
       const pairs = await AsyncStorage.multiGet(weekKeys);
 
-      const catTotals: Record<string, number> = {};
-
-      pairs.forEach(([_, value]: [string, string | null]) => {
-        if (!value) return;
-        const plan = JSON.parse(value);
-        plan.blocks?.forEach((b: any) => {
-          if (b.done) {
-            let catId: string | null = null;
-            let duration = 0;
-            if (b.isOneOff) {
-              catId = b.oneOffCategoryId;
-              duration = b.oneOffDuration;
-            } else if (b.templateId) {
-              const t = templates.find((temp: any) => temp.id === b.templateId);
-              if (t) {
-                catId = t.categoryId;
-                duration = t.durationHours;
-              }
-            }
-            if (catId && duration) {
-              catTotals[catId] = (catTotals[catId] || 0) + duration;
-            }
-          }
-        });
-      });
+      const plans = pairs
+        .filter((pair): pair is [string, string] => !!pair[1])
+        .map(([, value]) => JSON.parse(value) as WeeklyPlan);
+      const catTotals = sumCompletedHoursByCategory(plans, templates);
 
       const statsArray = Object.keys(catTotals).map((catId) => {
         const cat = categories.find((c: any) => c.id === catId);
