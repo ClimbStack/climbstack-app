@@ -264,6 +264,17 @@ describe('plannerStorage', () => {
       expect(await scrubDeletedTemplates([], templates, 'cat-1')).toBe(1.5);
     });
 
+    test('counts oneOffDuration for done one-off blocks', async () => {
+      await saveWeeklyPlan(
+        makePlan('2026-10-05', [
+          oneOff({ id: 'done', done: true, oneOffDuration: 2 }),
+          oneOff({ id: 'todo', done: false, oneOffDuration: 4 }),
+        ])
+      );
+
+      expect(await scrubDeletedTemplates([], templates, 'cat-1')).toBe(2);
+    });
+
     test('handles template and category matches together in one call', async () => {
       await saveWeeklyPlan(
         makePlan('2026-10-05', [

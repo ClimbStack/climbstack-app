@@ -79,7 +79,7 @@ function scrubPlanBlocks(
       continue;
     }
     if (b.done) {
-      let duration = b.customDuration ?? 0;
+      let duration = b.customDuration ?? b.oneOffDuration ?? 0;
       if (matchesTemplate && !b.customDuration) {
         const template = templates.find((t) => t.id === b.templateId);
         duration = template?.durationHours ?? 0;
