@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { BlockTemplate, ScheduledBlock, WeeklyPlan } from '../../types';
+import { deleteCalendarEvent } from '../../utils/calendar';
 import { scrubDeletedTemplates } from '../plannerStorage';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -63,7 +64,10 @@ describe('scrubDeletedTemplates storage round-trips', () => {
 
     const [writtenEntries] = (AsyncStorage.multiSet as jest.Mock).mock.calls[0];
     expect(writtenEntries).toHaveLength(WEEK_COUNT);
-    const remaining = JSON.parse(writtenEntries[0][1]) as WeeklyPlan;
+    const firstWeek = (writtenEntries as [string, string][]).find(
+      ([key]) => key === '@levelup/week/2026-W01'
+    );
+    const remaining = JSON.parse(firstWeek![1]) as WeeklyPlan;
     expect(remaining.blocks.map((b) => b.templateId)).toEqual(['tpl-2']);
   });
 
@@ -76,5 +80,38 @@ describe('scrubDeletedTemplates storage round-trips', () => {
     expect(hours).toBe(0);
     expect(AsyncStorage.multiGet).toHaveBeenCalledTimes(1);
     expect(AsyncStorage.multiSet).not.toHaveBeenCalled();
+  });
+
+  it('deletes calendar events only after the scrubbed plans are saved', async () => {
+    const plan: WeeklyPlan = {
+      weekId: '2026-W01',
+      blocks: [{ ...makeBlock('a', 'tpl-1'), calendarEventId: 'evt-1' }],
+    };
+    await AsyncStorage.setItem('@levelup/week/2026-W01', JSON.stringify(plan));
+    const order: string[] = [];
+    (AsyncStorage.multiSet as jest.Mock).mockImplementationOnce(async () => {
+      order.push('multiSet');
+    });
+    (deleteCalendarEvent as jest.Mock).mockImplementationOnce(async () => {
+      order.push('deleteCalendarEvent');
+    });
+
+    await scrubDeletedTemplates(['tpl-1'], templates);
+
+    expect(order).toEqual(['multiSet', 'deleteCalendarEvent']);
+  });
+
+  it('writes nothing and deletes no calendar event when a stored plan is corrupt', async () => {
+    const plan: WeeklyPlan = {
+      weekId: '2026-W01',
+      blocks: [{ ...makeBlock('a', 'tpl-1'), calendarEventId: 'evt-1' }],
+    };
+    await AsyncStorage.setItem('@levelup/week/2026-W01', JSON.stringify(plan));
+    await AsyncStorage.setItem('@levelup/week/2026-W02', '{not json');
+    jest.clearAllMocks();
+
+    await expect(scrubDeletedTemplates(['tpl-1'], templates)).rejects.toThrow(SyntaxError);
+    expect(AsyncStorage.multiSet).not.toHaveBeenCalled();
+    expect(deleteCalendarEvent).not.toHaveBeenCalled();
   });
 });

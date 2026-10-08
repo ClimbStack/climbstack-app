@@ -66,9 +66,10 @@ function scrubPlanBlocks(
   templateIds: string[],
   templates: BlockTemplate[],
   categoryId?: string
-): { blocks: ScheduledBlock[]; hoursSubtracted: number } {
+): { blocks: ScheduledBlock[]; hoursSubtracted: number; calendarEventIds: string[] } {
   let hoursSubtracted = 0;
   const keptBlocks: ScheduledBlock[] = [];
+  const calendarEventIds: string[] = [];
 
   for (const b of blocks) {
     const matchesTemplate = b.templateId && templateIds.includes(b.templateId);
@@ -87,11 +88,11 @@ function scrubPlanBlocks(
       hoursSubtracted += duration;
     }
     if (b.calendarEventId) {
-      deleteCalendarEvent(b.calendarEventId).catch(console.error);
+      calendarEventIds.push(b.calendarEventId);
     }
   }
 
-  return { blocks: keptBlocks, hoursSubtracted };
+  return { blocks: keptBlocks, hoursSubtracted, calendarEventIds };
 }
 
 export async function scrubDeletedTemplates(
@@ -107,25 +108,23 @@ export async function scrubDeletedTemplates(
   );
   const entries = await AsyncStorage.multiGet(planKeys);
   const modifiedEntries: [string, string][] = [];
+  const calendarEventIds: string[] = [];
 
   for (const [key, raw] of entries) {
     if (!raw) continue;
     const plan = JSON.parse(raw) as WeeklyPlan;
-    const { blocks, hoursSubtracted } = scrubPlanBlocks(
-      plan.blocks,
-      templateIds,
-      templates,
-      categoryId
-    );
-    totalHoursSubtracted += hoursSubtracted;
-    if (blocks.length !== plan.blocks.length) {
-      modifiedEntries.push([key, JSON.stringify({ ...plan, blocks })]);
+    const scrubbed = scrubPlanBlocks(plan.blocks, templateIds, templates, categoryId);
+    totalHoursSubtracted += scrubbed.hoursSubtracted;
+    calendarEventIds.push(...scrubbed.calendarEventIds);
+    if (scrubbed.blocks.length !== plan.blocks.length) {
+      modifiedEntries.push([key, JSON.stringify({ ...plan, blocks: scrubbed.blocks })]);
     }
   }
 
   if (modifiedEntries.length > 0) {
     await AsyncStorage.multiSet(modifiedEntries);
   }
+  calendarEventIds.forEach((id) => deleteCalendarEvent(id).catch(console.error));
 
   return totalHoursSubtracted;
 }
