@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="./assets/icon.png" width="120" style="border-radius: 24px; margin-bottom: 20px;" alt="LevelUp Logo" />
-  <h1>LevelUp</h1>
+  <img src="./assets/icon.png" width="120" style="border-radius: 24px; margin-bottom: 20px;" alt="ClimbStack Logo" />
+  <h1>ClimbStack</h1>
   <p><b>Gamify your goals. Conquer your peaks.</b></p>
 
   <p>
@@ -10,12 +10,12 @@
     <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" />
     <img src="https://img.shields.io/badge/Open_Source-4CAF50?style=for-the-badge&logo=open-source-initiative&logoColor=white" alt="Open Source" />
     <a href="https://doi.org/10.5281/zenodo.22969593"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22969593-blue?style=for-the-badge&logo=zenodo&logoColor=white" alt="DOI" /></a>
-    <a href="https://codecov.io/gh/GiZano/LevelUp"><img src="https://img.shields.io/codecov/c/github/GiZano/LevelUp?style=for-the-badge&logo=codecov&logoColor=white" alt="Codecov" /></a>
+    <a href="https://codecov.io/gh/ClimbStack/climbstack-app"><img src="https://img.shields.io/codecov/c/github/ClimbStack/climbstack-app?style=for-the-badge&logo=codecov&logoColor=white" alt="Codecov" /></a>
   </p>
   <p><i>An open-source productivity engine, built by developers, for everyone.</i></p>
 </div>
 
-LevelUp is a mobile app for long-term goal tracking, built around the metaphor of **mountain climbing**: every goal is a peak to reach, every sub-goal is a base camp along the way. It includes a weekly planner to organize your week in blocks and eliminate _decision fatigue_.
+ClimbStack is a mobile app for long-term goal tracking, built around the metaphor of **mountain climbing**: every goal is a peak to reach, every sub-goal is a base camp along the way. It includes a weekly planner to organize your week in blocks and eliminate _decision fatigue_.
 
 > [!NOTE]
 > Personal project born to solve a real problem: not knowing what to do in free time and ending up scrolling the phone. The app is the scaffolding — the real goal is to build the time-boxing habit until it becomes natural.
@@ -69,8 +69,8 @@ LevelUp is a mobile app for long-term goal tracking, built around the metaphor o
 
 ```bash
 # Clone the repository
-git clone https://github.com/gizano/LevelUp.git
-cd LevelUp
+git clone https://github.com/ClimbStack/climbstack-app.git
+cd climbstack-app
 
 # Install dependencies
 npm install
@@ -91,7 +91,7 @@ eas build --platform android --profile preview
 
 ### Installation from Release
 
-1. Go to the [Releases](https://github.com/gizano/LevelUp/releases) page of the repository
+1. Go to the [Releases](https://github.com/ClimbStack/climbstack-app/releases) page of the repository
 2. Download the APK of the latest release
 3. Transfer it to your phone and install it (enable "Install from unknown sources" if asked)
 
@@ -100,7 +100,7 @@ eas build --platform android --profile preview
 ## 📁 Project Structure
 
 ```
-LevelUp/
+climbstack-app/
 ├── src/
 │   ├── components/     # Reusable UI components
 │   ├── screens/        # App screens
@@ -165,8 +165,8 @@ See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 We are actively working to cover the entire application with automated tests. Help us make this sunburst graph completely green!
 
 <p align="center">
-  <a href="https://codecov.io/github/GiZano/LevelUp">
-    <img src="https://codecov.io/github/GiZano/LevelUp/graphs/sunburst.svg?token=ZMK6BDH8WI" alt="Codecov Sunburst" width="600" />
+  <a href="https://codecov.io/github/ClimbStack/climbstack-app">
+    <img src="https://codecov.io/github/ClimbStack/climbstack-app/graphs/sunburst.svg?token=ZMK6BDH8WI" alt="Codecov Sunburst" width="600" />
   </a>
 </p>
 
@@ -174,7 +174,7 @@ We are actively working to cover the entire application with automated tests. He
 
 ## 🤝 Community & Security
 
-- **Open Source Philosophy**: LevelUp is 100% open-source, built by developers for everyone. We believe in transparency and community-driven tools.
+- **Open Source Philosophy**: ClimbStack is 100% open-source, built by developers for everyone. We believe in transparency and community-driven tools.
 - **Code of Conduct**: Please refer to our [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) to understand the standards for participating in our community.
 - **Security**: If you discover any security vulnerabilities, please check our [SECURITY.md](./SECURITY.md) for reporting guidelines.
 

@@ -1,4 +1,4 @@
-# 🏔️ LevelUp — Roadmap
+# 🏔️ ClimbStack — Roadmap
 
 > Personal side project. Timeboxed, AI-assisted, controlled scope.
 > The goal is to have a working app on the phone, not to win a design award.
@@ -23,7 +23,7 @@
 - [x] Linter + formatter setup (ESLint + Prettier)
 - [x] First commit with working empty skeleton
 
-**Deliverable**: `npx expo start` works, app shows an empty screen with "LevelUp" name
+**Deliverable**: `npx expo start` works, app shows an empty screen with "ClimbStack" name
 
 ---
 

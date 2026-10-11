@@ -1,6 +1,6 @@
 import { t } from '../utils/i18n';
 /**
- * LevelUp — Core type definitions
+ * ClimbStack — Core type definitions
  *
  * Modello dati basato sulla metafora alpinistica:
  * - Peak (Vetta): obiettivo a lungo termine

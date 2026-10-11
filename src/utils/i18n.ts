@@ -215,9 +215,9 @@ const translations = {
       exportSuccessMsg: 'Backup exported successfully!',
       exportErrorTitle: 'Error',
       exportErrorMsg: 'Failed to export data.',
-      aboutTitle: 'About LevelUp',
+      aboutTitle: 'About ClimbStack',
       aboutDesc1:
-        'LevelUp was born from a simple need: eliminating decision fatigue in free time. The mountain climbing metaphor helps tracking long-term goals (Peaks) and breaking them down into actionable steps (Camps).',
+        'ClimbStack was born from a simple need: eliminating decision fatigue in free time. The mountain climbing metaphor helps tracking long-term goals (Peaks) and breaking them down into actionable steps (Camps).',
       aboutDesc2: 'This app is 100% Open Source and built by developers, for everyone.',
       starGithub: 'Star on GitHub',
       submitIssue: 'Submit an Issue',
@@ -435,9 +435,9 @@ const translations = {
       exportSuccessMsg: 'Backup esportato con successo!',
       exportErrorTitle: 'Errore',
       exportErrorMsg: "Errore durante l'esportazione del backup.",
-      aboutTitle: 'About LevelUp',
+      aboutTitle: 'About ClimbStack',
       aboutDesc1:
-        'LevelUp nasce da una necessità semplice: eliminare la "decision fatigue" nel tempo libero. La metafora dell\'arrampicata aiuta a tracciare obiettivi a lungo termine (Vette) e suddividerli in passaggi concreti (Campi).',
+        'ClimbStack nasce da una necessità semplice: eliminare la "decision fatigue" nel tempo libero. La metafora dell\'arrampicata aiuta a tracciare obiettivi a lungo termine (Vette) e suddividerli in passaggi concreti (Campi).',
       aboutDesc2: 'Questa app è 100% Open Source, creata da sviluppatori per tutti.',
       starGithub: 'Metti una stella su GitHub',
       submitIssue: 'Aggiungi una Issue',
@@ -653,9 +653,9 @@ const translations = {
       exportSuccessMsg: 'Backup erfolgreich exportiert!',
       exportErrorTitle: 'Fehler',
       exportErrorMsg: 'Fehler beim Exportieren der Daten.',
-      aboutTitle: 'Über LevelUp',
+      aboutTitle: 'Über ClimbStack',
       aboutDesc1:
-        'LevelUp entstand aus einem einfachen Bedürfnis: Entscheidungsmüdigkeit in der Freizeit zu beseitigen. Die Bergsteiger-Metapher hilft dabei, langfristige Ziele (Gipfel) zu verfolgen und in konkrete Schritte (Camps) zu unterteilen.',
+        'ClimbStack entstand aus einem einfachen Bedürfnis: Entscheidungsmüdigkeit in der Freizeit zu beseitigen. Die Bergsteiger-Metapher hilft dabei, langfristige Ziele (Gipfel) zu verfolgen und in konkrete Schritte (Camps) zu unterteilen.',
       aboutDesc2:
         'Diese App ist zu 100 % Open Source und wurde von Entwicklern für alle geschaffen.',
       starGithub: 'Mit Stern auf GitHub markieren',
@@ -873,9 +873,9 @@ const translations = {
       exportSuccessMsg: 'Sauvegarde exportée avec succès !',
       exportErrorTitle: 'Erreur',
       exportErrorMsg: "Échec de l'exportation des données.",
-      aboutTitle: 'À propos de LevelUp',
+      aboutTitle: 'À propos de ClimbStack',
       aboutDesc1:
-        "LevelUp est né d'un besoin simple : éliminer la fatigue décisionnelle pendant le temps libre. La métaphore de l'escalade permet de suivre des objectifs à long terme (Sommets) et de les décomposer en étapes concrètes (Camps).",
+        "ClimbStack est né d'un besoin simple : éliminer la fatigue décisionnelle pendant le temps libre. La métaphore de l'escalade permet de suivre des objectifs à long terme (Sommets) et de les décomposer en étapes concrètes (Camps).",
       aboutDesc2:
         'Cette application est 100 % Open Source et conçue par des développeurs pour tous.',
       starGithub: 'Mettre une étoile sur GitHub',
@@ -1093,9 +1093,9 @@ const translations = {
       exportSuccessMsg: '¡Copia exportada con éxito!',
       exportErrorTitle: 'Error',
       exportErrorMsg: 'Error al exportar los datos.',
-      aboutTitle: 'Acerca de LevelUp',
+      aboutTitle: 'Acerca de ClimbStack',
       aboutDesc1:
-        'LevelUp nació de una necesidad sencilla: eliminar la fatiga de decisión en el tiempo libre. La metáfora de la escalada ayuda a seguir objetivos a largo plazo (Cimas) y dividirlos en pasos concretos (Campamentos).',
+        'ClimbStack nació de una necesidad sencilla: eliminar la fatiga de decisión en el tiempo libre. La metáfora de la escalada ayuda a seguir objetivos a largo plazo (Cimas) y dividirlos en pasos concretos (Campamentos).',
       aboutDesc2:
         'Esta aplicación es 100% de código abierto y creada por desarrolladores para todos.',
       starGithub: 'Dar una estrella en GitHub',

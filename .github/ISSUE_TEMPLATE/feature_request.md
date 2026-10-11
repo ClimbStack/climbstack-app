@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest an idea for LevelUp
+about: Suggest an idea for ClimbStack
 title: '[FEAT] '
 labels: enhancement
 assignees: ''
@@ -12,7 +12,7 @@ assignees: ''
 
 ## Describe the solution you'd like
 
-<!-- A clear and concise description of what you want to happen. Keep in mind LevelUp's minimal and native UI philosophy. -->
+<!-- A clear and concise description of what you want to happen. Keep in mind ClimbStack's minimal and native UI philosophy. -->
 
 ## Describe alternatives you've considered
 

@@ -2,8 +2,8 @@
 
 ## Supported Versions
 
-LevelUp currently supports the following versions with security updates:
-
+ClimbStack currently supports the following versions with security updates:
+ 
 | Version | Supported          |
 | ------- | ------------------ |
 | 1.0.x   | :white_check_mark: |
@@ -11,7 +11,7 @@ LevelUp currently supports the following versions with security updates:
 
 ## Reporting a Vulnerability
 
-Security is a priority for LevelUp. If you discover a security vulnerability, please do not disclose it publicly.
+Security is a priority for ClimbStack. If you discover a security vulnerability, please do not disclose it publicly.
 
 Instead, please send an email to the project maintainer at [your.email@example.com] (or use GitHub Security Advisories) to report the vulnerability.
 

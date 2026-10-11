@@ -97,7 +97,7 @@ describe('plannerStorage', () => {
 
       await saveWeeklyPlan(plan);
 
-      expect(await AsyncStorage.getItem('@levelup/week/2026-10-05')).toBe(JSON.stringify(plan));
+      expect(await AsyncStorage.getItem('@climbstack/week/2026-10-05')).toBe(JSON.stringify(plan));
     });
 
     test('round-trips a plan', async () => {
@@ -292,14 +292,14 @@ describe('plannerStorage', () => {
       const categories = [makeCategory()];
       await saveCategories(categories);
       await saveTemplates(templates);
-      await AsyncStorage.setItem('@levelup/streak', '3');
+      await AsyncStorage.setItem('@climbstack/streak', '3');
 
       const hours = await scrubDeletedTemplates(['tpl-1'], templates);
 
       expect(hours).toBe(0);
       expect(await loadCategories()).toEqual(categories);
       expect(await loadTemplates()).toEqual(templates);
-      expect(await AsyncStorage.getItem('@levelup/streak')).toBe('3');
+      expect(await AsyncStorage.getItem('@climbstack/streak')).toBe('3');
     });
 
     test('leaves unrelated plans byte-for-byte untouched', async () => {
@@ -309,7 +309,7 @@ describe('plannerStorage', () => {
 
       await scrubDeletedTemplates(['tpl-1'], templates);
 
-      expect(await AsyncStorage.getItem('@levelup/week/2026-10-05')).toBe(
+      expect(await AsyncStorage.getItem('@climbstack/week/2026-10-05')).toBe(
         JSON.stringify(unrelated)
       );
     });

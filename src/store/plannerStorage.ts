@@ -3,6 +3,12 @@ import type { Category, BlockTemplate, WeeklyPlan } from '../types';
 import { deleteCalendarEvent } from '../utils/calendar';
 
 const KEYS = {
+  CATEGORIES: '@climbstack/categories',
+  TEMPLATES: '@climbstack/templates',
+  WEEKLY_PLAN_PREFIX: '@climbstack/week/',
+} as const;
+
+const LEGACY_KEYS = {
   CATEGORIES: '@levelup/categories',
   TEMPLATES: '@levelup/templates',
   WEEKLY_PLAN_PREFIX: '@levelup/week/',
@@ -15,7 +21,10 @@ export async function saveCategories(categories: Category[]): Promise<void> {
 }
 
 export async function loadCategories(): Promise<Category[]> {
-  const raw = await AsyncStorage.getItem(KEYS.CATEGORIES);
+  let raw = await AsyncStorage.getItem(KEYS.CATEGORIES);
+  if (!raw) {
+    raw = await AsyncStorage.getItem(LEGACY_KEYS.CATEGORIES);
+  }
   if (!raw) return [];
   return JSON.parse(raw) as Category[];
 }
@@ -27,7 +36,10 @@ export async function saveTemplates(templates: BlockTemplate[]): Promise<void> {
 }
 
 export async function loadTemplates(): Promise<BlockTemplate[]> {
-  const raw = await AsyncStorage.getItem(KEYS.TEMPLATES);
+  let raw = await AsyncStorage.getItem(KEYS.TEMPLATES);
+  if (!raw) {
+    raw = await AsyncStorage.getItem(LEGACY_KEYS.TEMPLATES);
+  }
   if (!raw) return [];
   return JSON.parse(raw) as BlockTemplate[];
 }
@@ -41,7 +53,10 @@ export async function saveWeeklyPlan(plan: WeeklyPlan): Promise<void> {
 
 export async function loadWeeklyPlan(weekId: string): Promise<WeeklyPlan | null> {
   const key = KEYS.WEEKLY_PLAN_PREFIX + weekId;
-  const raw = await AsyncStorage.getItem(key);
+  let raw = await AsyncStorage.getItem(key);
+  if (!raw) {
+    raw = await AsyncStorage.getItem(LEGACY_KEYS.WEEKLY_PLAN_PREFIX + weekId);
+  }
   if (!raw) return null;
   return JSON.parse(raw) as WeeklyPlan;
 }
@@ -54,7 +69,9 @@ export async function scrubDeletedTemplates(
   let totalHoursSubtracted = 0;
 
   const allKeys = await AsyncStorage.getAllKeys();
-  const planKeys = allKeys.filter((k) => k.startsWith(KEYS.WEEKLY_PLAN_PREFIX));
+  const planKeys = allKeys.filter(
+    (k) => k.startsWith(KEYS.WEEKLY_PLAN_PREFIX) || k.startsWith(LEGACY_KEYS.WEEKLY_PLAN_PREFIX)
+  );
 
   for (const key of planKeys) {
     const raw = await AsyncStorage.getItem(key);

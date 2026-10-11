@@ -44,8 +44,8 @@ export default function SettingsScreen() {
   const exportBackup = async () => {
     try {
       const keys = await AsyncStorage.getAllKeys();
-      const levelUpKeys = keys.filter((k) => k.startsWith('@levelup/'));
-      const pairs = await AsyncStorage.multiGet(levelUpKeys);
+      const appKeys = keys.filter((k) => k.startsWith('@climbstack/') || k.startsWith('@levelup/'));
+      const pairs = await AsyncStorage.multiGet(appKeys);
       const backupData = {
         version: 1,
         exportedAt: new Date().toISOString(),
@@ -60,7 +60,7 @@ export default function SettingsScreen() {
         if (permissions.granted) {
           const uri = await FileSystem.StorageAccessFramework.createFileAsync(
             permissions.directoryUri,
-            'levelup_backup.json',
+            'climbstack_backup.json',
             'application/json'
           );
           await FileSystem.writeAsStringAsync(uri, jsonStr, {
@@ -72,13 +72,13 @@ export default function SettingsScreen() {
       }
 
       // Fallback to sharing for iOS or if user cancels SAF on Android
-      const fileUri = FileSystem.documentDirectory + 'levelup_backup.json';
+      const fileUri = FileSystem.documentDirectory + 'climbstack_backup.json';
       await FileSystem.writeAsStringAsync(fileUri, jsonStr, {
         encoding: FileSystem.EncodingType.UTF8,
       });
       await Sharing.shareAsync(fileUri, {
         mimeType: 'application/json',
-        dialogTitle: 'LevelUp Backup',
+        dialogTitle: 'ClimbStack Backup',
       });
     } catch {
       Alert.alert(t('settings.exportErrorTitle'), t('settings.exportErrorMsg'));
@@ -116,9 +116,11 @@ export default function SettingsScreen() {
               ][];
 
               const allKeys = await AsyncStorage.getAllKeys();
-              const levelUpKeys = allKeys.filter((k) => k.startsWith('@levelup/'));
-              if (levelUpKeys.length > 0) {
-                await AsyncStorage.multiRemove(levelUpKeys);
+              const appKeys = allKeys.filter(
+                (k) => k.startsWith('@climbstack/') || k.startsWith('@levelup/')
+              );
+              if (appKeys.length > 0) {
+                await AsyncStorage.multiRemove(appKeys);
               }
 
               await AsyncStorage.multiSet(entries);
@@ -277,7 +279,7 @@ export default function SettingsScreen() {
 
           <Pressable
             style={[styles.linkBtn, { backgroundColor: colors.surfaceAlt }]}
-            onPress={() => Linking.openURL('https://github.com/gizano/LevelUp')}
+            onPress={() => Linking.openURL('https://github.com/ClimbStack/climbstack-app')}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <MaterialCommunityIcons
@@ -294,7 +296,7 @@ export default function SettingsScreen() {
 
           <Pressable
             style={[styles.linkBtn, { backgroundColor: colors.surfaceAlt, marginTop: Spacing.sm }]}
-            onPress={() => Linking.openURL('https://github.com/gizano/LevelUp/issues')}
+            onPress={() => Linking.openURL('https://github.com/ClimbStack/climbstack-app/issues')}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <MaterialCommunityIcons

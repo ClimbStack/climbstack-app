@@ -1,6 +1,6 @@
-# Contributing to LevelUp 🏔️
+# Contributing to ClimbStack 🏔️
 
-First off, thank you for considering contributing to LevelUp! It's people like you that make the open-source community such a great place to learn, inspire, and create.
+First off, thank you for considering contributing to ClimbStack! It's people like you that make the open-source community such a great place to learn, inspire, and create.
 
 ## How to Contribute
 
@@ -9,7 +9,7 @@ First off, thank you for considering contributing to LevelUp! It's people like y
 3. **Develop**: Write your code. Make sure to adhere to the coding guidelines below.
 4. **Test**: Ensure the app builds locally and your changes don't break existing functionality.
 5. **Commit**: Use Conventional Commits (e.g., `feat: add new block type`, `fix: resolve crash on peaks screen`).
-6. **Push & PR**: Push your branch to your fork and open a Pull Request against the `main` branch of LevelUp.
+6. **Push & PR**: Push your branch to your fork and open a Pull Request against the `main` branch of ClimbStack.
 
 ## Local Development Setup
 
@@ -49,7 +49,7 @@ If you are new to the codebase, look for issues labeled `good first issue` or `h
 
 ## Modular Architecture
 
-LevelUp strictly follows a modular architecture (inspired by large-scale projects like SymPy). When contributing, please ensure your code is isolated to its specific domain:
+ClimbStack strictly follows a modular architecture (inspired by large-scale projects like SymPy). When contributing, please ensure your code is isolated to its specific domain:
 
 - `src/store/`: Core logic, SQLite interactions, and React Context state.
 - `src/components/`: Dumb, reusable UI components (e.g., SVG charts, buttons).
@@ -59,7 +59,7 @@ LevelUp strictly follows a modular architecture (inspired by large-scale project
 
 ## Versioning Policy
 
-LevelUp follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`):
+ClimbStack follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`):
 
 | Bump                | When                                                                                                                | Example  |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------- | -------- |

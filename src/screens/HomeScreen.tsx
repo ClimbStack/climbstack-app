@@ -46,7 +46,9 @@ export default function HomeScreen({ navigation }: HomeProps) {
   const loadAltStats = async () => {
     try {
       const keys = await AsyncStorage.getAllKeys();
-      const weekKeys = keys.filter((k: string) => k.startsWith('@levelup/week/'));
+      const weekKeys = keys.filter(
+        (k: string) => k.startsWith('@climbstack/week/') || k.startsWith('@levelup/week/')
+      );
       const pairs = await AsyncStorage.multiGet(weekKeys);
 
       const catTotals: Record<string, number> = {};
@@ -113,7 +115,10 @@ export default function HomeScreen({ navigation }: HomeProps) {
   React.useEffect(() => {
     const checkOnboarding = async () => {
       try {
-        const done = await AsyncStorage.getItem('@levelup/onboarding_done');
+        let done = await AsyncStorage.getItem('@climbstack/onboarding_done');
+        if (!done) {
+          done = await AsyncStorage.getItem('@levelup/onboarding_done');
+        }
         if (!done) {
           setShowOnboarding(true);
         }
@@ -126,7 +131,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
 
   const handleDismissOnboarding = async () => {
     try {
-      await AsyncStorage.setItem('@levelup/onboarding_done', 'true');
+      await AsyncStorage.setItem('@climbstack/onboarding_done', 'true');
     } catch (e) {
       console.log(e);
     }
@@ -135,7 +140,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'LevelUp',
+      title: 'ClimbStack',
       headerStyle: { backgroundColor: colors.surface },
       headerTintColor: colors.text,
     });

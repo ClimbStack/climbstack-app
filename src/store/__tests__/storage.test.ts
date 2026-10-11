@@ -85,9 +85,9 @@ describe('storage', () => {
     test('stores values as strings under the expected keys', async () => {
       await saveStreak(4, '2026-10-02', 1.25);
 
-      expect(await AsyncStorage.getItem('@levelup/streak')).toBe('4');
-      expect(await AsyncStorage.getItem('@levelup/last_active')).toBe('2026-10-02');
-      expect(await AsyncStorage.getItem('@levelup/completed_hours')).toBe('1.25');
+      expect(await AsyncStorage.getItem('@climbstack/streak')).toBe('4');
+      expect(await AsyncStorage.getItem('@climbstack/last_active')).toBe('2026-10-02');
+      expect(await AsyncStorage.getItem('@climbstack/completed_hours')).toBe('1.25');
     });
 
     test('overwrites a previous streak', async () => {
@@ -98,7 +98,7 @@ describe('storage', () => {
     });
 
     test('treats a partially stored streak as defaults for missing fields', async () => {
-      await AsyncStorage.setItem('@levelup/streak', '5');
+      await AsyncStorage.setItem('@climbstack/streak', '5');
 
       expect(await loadStreak()).toEqual({
         streak: 5,
@@ -107,10 +107,22 @@ describe('storage', () => {
       });
     });
 
+    test('reads from legacy @levelup keys when @climbstack keys are absent', async () => {
+      await AsyncStorage.setItem('@levelup/streak', '7');
+      await AsyncStorage.setItem('@levelup/last_active', '2026-10-01');
+      await AsyncStorage.setItem('@levelup/completed_hours', '3.5');
+
+      expect(await loadStreak()).toEqual({
+        streak: 7,
+        lastActiveDate: '2026-10-01',
+        totalCompletedHours: 3.5,
+      });
+    });
+
     test('parses streak as integer and hours as float from raw strings', async () => {
       await AsyncStorage.multiSet([
-        ['@levelup/streak', '6.9'],
-        ['@levelup/completed_hours', '2.75'],
+        ['@climbstack/streak', '6.9'],
+        ['@climbstack/completed_hours', '2.75'],
       ]);
 
       const loaded = await loadStreak();
