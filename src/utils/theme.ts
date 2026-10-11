@@ -1,5 +1,5 @@
 /**
- * LevelUp — Theme constants
+ * ClimbStack — Theme constants
  *
  * Palette "Alpine Dusk":
  * - Warm stone and charcoal for backgrounds

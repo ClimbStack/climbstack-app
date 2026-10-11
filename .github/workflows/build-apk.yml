@@ -43,7 +43,7 @@ jobs:
       - name: 📂 Upload APK Artifact
         uses: actions/upload-artifact@v7
         with:
-          name: LevelUp-APK
+          name: ClimbStack-APK
           path: android/app/build/outputs/apk/release/app-release.apk
 
       - name: 🚀 Create GitHub Release
@@ -51,5 +51,5 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: android/app/build/outputs/apk/release/app-release.apk
-          name: LevelUp ${{ github.ref_name }}
+          name: ClimbStack ${{ github.ref_name }}
           generate_release_notes: true

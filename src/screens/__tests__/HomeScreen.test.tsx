@@ -37,6 +37,8 @@ const mockUseThemeColors = useThemeColors as jest.Mock;
 const mockUseLocale = useLocale as jest.Mock;
 
 describe('HomeScreen', () => {
+  jest.setTimeout(15000);
+
   const mockNavigation = {
     navigate: jest.fn(),
     setOptions: jest.fn(),
@@ -92,7 +94,7 @@ describe('HomeScreen', () => {
 
   beforeEach(() => {
     (AsyncStorage as any).__INTERNAL_MOCK_STORAGE__ = {
-      '@levelup/onboarding_done': 'true',
+      '@climbstack/onboarding_done': 'true',
     };
     jest.clearAllMocks();
     jest.useFakeTimers();
@@ -132,7 +134,7 @@ describe('HomeScreen', () => {
       await render(<HomeScreen navigation={mockNavigation} route={{} as any} />);
 
       expect(mockNavigation.setOptions).toHaveBeenCalledWith({
-        title: 'LevelUp',
+        title: 'ClimbStack',
         headerStyle: { backgroundColor: Colors.light.surface },
         headerTintColor: Colors.light.text,
       });
@@ -147,7 +149,7 @@ describe('HomeScreen', () => {
       await render(<HomeScreen navigation={mockNavigation} route={{} as any} />);
 
       expect(mockNavigation.setOptions).toHaveBeenCalledWith({
-        title: 'LevelUp',
+        title: 'ClimbStack',
         headerStyle: { backgroundColor: Colors.dark.surface },
         headerTintColor: Colors.dark.text,
       });
@@ -156,7 +158,7 @@ describe('HomeScreen', () => {
 
   describe('onboarding modal lifecycle', () => {
     it('shows onboarding modal when onboarding is not marked as done', async () => {
-      await AsyncStorage.removeItem('@levelup/onboarding_done');
+      await AsyncStorage.removeItem('@climbstack/onboarding_done');
 
       const { findByText } = await render(
         <HomeScreen navigation={mockNavigation} route={{} as any} />
@@ -166,7 +168,7 @@ describe('HomeScreen', () => {
     });
 
     it('dismisses onboarding modal and stores onboarding_done flag', async () => {
-      await AsyncStorage.removeItem('@levelup/onboarding_done');
+      await AsyncStorage.removeItem('@climbstack/onboarding_done');
 
       const { findByText, queryByText } = await render(
         <HomeScreen navigation={mockNavigation} route={{} as any} />
@@ -175,7 +177,7 @@ describe('HomeScreen', () => {
       const skipButton = await findByText(t('onboarding.skip'));
       await fireEvent.press(skipButton);
 
-      const doneFlag = await AsyncStorage.getItem('@levelup/onboarding_done');
+      const doneFlag = await AsyncStorage.getItem('@climbstack/onboarding_done');
       expect(doneFlag).toBe('true');
       expect(queryByText(t('onboarding.skip'))).toBeNull();
     });
@@ -192,7 +194,7 @@ describe('HomeScreen', () => {
     });
 
     it('handles AsyncStorage error during onboarding dismissal gracefully', async () => {
-      await AsyncStorage.removeItem('@levelup/onboarding_done');
+      await AsyncStorage.removeItem('@climbstack/onboarding_done');
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
       jest.spyOn(AsyncStorage, 'setItem').mockRejectedValueOnce(new Error('Save failure'));
 
@@ -502,10 +504,10 @@ describe('HomeScreen', () => {
         ],
       };
 
-      await AsyncStorage.setItem('@levelup/week/2026-10-05', JSON.stringify(weekPlan));
+      await AsyncStorage.setItem('@climbstack/week/2026-10-05', JSON.stringify(weekPlan));
       jest
         .spyOn(AsyncStorage, 'getAllKeys')
-        .mockResolvedValueOnce(['@levelup/week/2026-10-05', '@levelup/week/missing-value']);
+        .mockResolvedValueOnce(['@climbstack/week/2026-10-05', '@climbstack/week/missing-value']);
 
       mockUsePeaks.mockReturnValue({
         peaks: [

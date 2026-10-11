@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "LevelUp",
-    "slug": "levelup",
-    "version": "1.2.0",
+    "name": "ClimbStack",
+    "slug": "climbstack",
+    "version": "1.3.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -13,7 +13,7 @@
     "android": {
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.gizano.levelup",
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "backgroundColor": "#071A2F",
         "foregroundImage": "./assets/icon.png"
@@ -34,7 +34,16 @@
         }
       ],
       "expo-sharing",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {

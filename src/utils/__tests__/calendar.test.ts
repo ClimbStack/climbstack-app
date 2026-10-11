@@ -56,7 +56,7 @@ describe('calendar utils', () => {
     setPlatform('android');
     grantPermission();
     calendarStub.getCalendarsAsync.mockResolvedValue([
-      makeCalendar({ id: 'cal-existing', title: 'LevelUp - Study' }),
+      makeCalendar({ id: 'cal-existing', title: 'ClimbStack - Study' }),
     ]);
     calendarStub.createEventAsync.mockResolvedValue('evt-123');
   });
@@ -198,12 +198,12 @@ describe('calendar utils', () => {
         await createCalendarEvent('X', 'lun', '09:00', 1, 'Sport', '#00ff00', '2026-10-05');
 
         expect(calendarStub.createCalendarAsync).toHaveBeenCalledWith({
-          title: 'LevelUp - Sport',
+          title: 'ClimbStack - Sport',
           color: '#00ff00',
           entityType: 'event',
           sourceId: 'src-main',
           source: primary.source,
-          name: 'LevelUp - Sport',
+          name: 'ClimbStack - Sport',
           ownerAccount: 'main@example.com',
           accessLevel: 'owner',
         });

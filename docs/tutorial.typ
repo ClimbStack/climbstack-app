@@ -3,7 +3,7 @@
 #set par(justify: true)
 
 #align(center)[
-  #text(size: 28pt, weight: "bold")[LevelUp]
+  #text(size: 28pt, weight: "bold")[ClimbStack]
   
   #v(1em)
   #text(size: 16pt)[User Manual & Full Tutorial]
@@ -16,15 +16,15 @@
 #v(4em)
 
 = 1. Introduction
-LevelUp is a React Native application built to defeat *decision fatigue*. It combines gamified long-term goals with strict weekly time-blocking. Instead of constantly wondering "What should I do today?", LevelUp provides a clear, actionable dashboard based on your predefined weekly routine.
+ClimbStack is a React Native application built to defeat *decision fatigue*. It combines gamified long-term goals with strict weekly time-blocking. Instead of constantly wondering "What should I do today?", ClimbStack provides a clear, actionable dashboard based on your predefined weekly routine.
 
 This document serves as both a comprehensive guide for new users during testing sessions and a technical reference for contributors.
 
 #pagebreak()
 
-= 2. Quick Start: The LevelUp Methodology
+= 2. Quick Start: The ClimbStack Methodology
 
-The core philosophy of LevelUp is bridging the gap between grand ambitions and daily execution. To do this, we use the mountain metaphor.
+The core philosophy of ClimbStack is bridging the gap between grand ambitions and daily execution. To do this, we use the mountain metaphor.
 
 == 2.1 Peaks & Camps (The "What")
 A *Peak* represents a major, long-term goal (e.g., "Pass the OS Exam", "Launch a Startup"). Because Peaks are daunting, they must be broken down into *Camps* (milestones). Every time a camp is reached, you gain 100 meters of altitude, creating a gamified sense of progression.
@@ -74,7 +74,7 @@ To reach camps, you need to put in the hours consistently. *Blocks* are schedule
 
 = 4. Gamification & Analytics
 
-LevelUp uses subtle gamification to keep you engaged:
+ClimbStack uses subtle gamification to keep you engaged:
 - *Altitude*: Earned by completing Camps (100m) and Blocks (1m/hour). Tap the "Total Altitude" card on the Home screen to view a historical breakdown of meters climbed per category and per peak.
 - *Peaks Reached*: Tracks fully completed goals. Tap this card to see a list of completed and in-progress peaks with exact completion percentages.
 - *Streaks*: Your consecutive days of activity. Do at least one block a day to keep the fire alive!
@@ -83,7 +83,7 @@ LevelUp uses subtle gamification to keep you engaged:
 
 = 5. Settings & Data Management
 
-LevelUp is fully offline and privacy-first.
+ClimbStack is fully offline and privacy-first.
 - *Backup*: From the Settings tab, you can export all your data (Peaks, Blocks, Categories) into a single `.json` file and share it via Google Drive or Email. You can also import a backup to restore your data on a new device.
 - *Localization*: Change the language (English/Italian) on the fly without restarting the app.
 
@@ -91,7 +91,7 @@ LevelUp is fully offline and privacy-first.
 
 = 6. Technical Architecture
 
-LevelUp is designed to be fully offline, privacy-first, and lightning-fast.
+ClimbStack is designed to be fully offline, privacy-first, and lightning-fast.
 
 - *Frontend Framework*: React Native (via Expo Managed Workflow).
 - *Language*: TypeScript.
@@ -100,6 +100,6 @@ LevelUp is designed to be fully offline, privacy-first, and lightning-fast.
 
 = 7. Open Source Contribution
 
-LevelUp strongly embraces *Agent-Driven Development*. We encourage contributors to utilize AI tools (like Copilot, Claude, or Antigravity) to write boilerplate, fix bugs, and scaffold features. 
+ClimbStack strongly embraces *Agent-Driven Development*. We encourage contributors to utilize AI tools (like Copilot, Claude, or Antigravity) to write boilerplate, fix bugs, and scaffold features. 
 
 Please read the `AGENTS.md` and `CONTRIBUTING.md` files in the repository root for specific instructions on how to prompt your AI assistant and structure your Pull Requests for this codebase.

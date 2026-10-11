@@ -15,8 +15,9 @@ async function getOrCreateCategoryCalendar(
   if (status !== 'granted') return null;
 
   const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-  const calName = `LevelUp - ${catName}`;
-  const existing = calendars.find((c) => c.title === calName);
+  const calName = `ClimbStack - ${catName}`;
+  const legacyCalName = `LevelUp - ${catName}`;
+  const existing = calendars.find((c) => c.title === calName || c.title === legacyCalName);
   if (existing) {
     // If the color changed, we could update it, but keep it simple for now
     return existing.id;
