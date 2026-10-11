@@ -3,7 +3,7 @@
 ## Supported Versions
 
 ClimbStack currently supports the following versions with security updates:
- 
+
 | Version | Supported          |
 | ------- | ------------------ |
 | 1.0.x   | :white_check_mark: |
