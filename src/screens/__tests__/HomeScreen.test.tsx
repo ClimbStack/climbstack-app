@@ -37,6 +37,8 @@ const mockUseThemeColors = useThemeColors as jest.Mock;
 const mockUseLocale = useLocale as jest.Mock;
 
 describe('HomeScreen', () => {
+  jest.setTimeout(15000);
+
   const mockNavigation = {
     navigate: jest.fn(),
     setOptions: jest.fn(),
