@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Category, BlockTemplate, WeeklyPlan } from '../types';
+import type { Category, BlockTemplate, ScheduledBlock, WeeklyPlan } from '../types';
 import { deleteCalendarEvent } from '../utils/calendar';
 
 const KEYS = {
@@ -61,6 +61,40 @@ export async function loadWeeklyPlan(weekId: string): Promise<WeeklyPlan | null>
   return JSON.parse(raw) as WeeklyPlan;
 }
 
+function scrubPlanBlocks(
+  blocks: ScheduledBlock[],
+  templateIds: string[],
+  templates: BlockTemplate[],
+  categoryId?: string
+): { blocks: ScheduledBlock[]; hoursSubtracted: number; calendarEventIds: string[] } {
+  let hoursSubtracted = 0;
+  const keptBlocks: ScheduledBlock[] = [];
+  const calendarEventIds: string[] = [];
+
+  for (const b of blocks) {
+    const matchesTemplate = b.templateId && templateIds.includes(b.templateId);
+    const matchesOneOffCat = categoryId && b.oneOffCategoryId === categoryId;
+
+    if (!matchesTemplate && !matchesOneOffCat) {
+      keptBlocks.push(b);
+      continue;
+    }
+    if (b.done) {
+      let duration = b.customDuration ?? b.oneOffDuration ?? 0;
+      if (matchesTemplate && !b.customDuration) {
+        const template = templates.find((t) => t.id === b.templateId);
+        duration = template?.durationHours ?? 0;
+      }
+      hoursSubtracted += duration;
+    }
+    if (b.calendarEventId) {
+      calendarEventIds.push(b.calendarEventId);
+    }
+  }
+
+  return { blocks: keptBlocks, hoursSubtracted, calendarEventIds };
+}
+
 export async function scrubDeletedTemplates(
   templateIds: string[],
   templates: BlockTemplate[],
@@ -72,41 +106,25 @@ export async function scrubDeletedTemplates(
   const planKeys = allKeys.filter(
     (k) => k.startsWith(KEYS.WEEKLY_PLAN_PREFIX) || k.startsWith(LEGACY_KEYS.WEEKLY_PLAN_PREFIX)
   );
+  const entries = await AsyncStorage.multiGet(planKeys);
+  const modifiedEntries: [string, string][] = [];
+  const calendarEventIds: string[] = [];
 
-  for (const key of planKeys) {
-    const raw = await AsyncStorage.getItem(key);
-    if (raw) {
-      const plan = JSON.parse(raw) as WeeklyPlan;
-      let planModified = false;
-
-      const newBlocks = plan.blocks.filter((b) => {
-        const matchesTemplate = b.templateId && templateIds.includes(b.templateId);
-        const matchesOneOffCat = categoryId && b.oneOffCategoryId === categoryId;
-
-        if (matchesTemplate || matchesOneOffCat) {
-          if (b.done) {
-            let duration = b.customDuration ?? 0;
-            if (matchesTemplate && !b.customDuration) {
-              const template = templates.find((t) => t.id === b.templateId);
-              duration = template?.durationHours ?? 0;
-            }
-            totalHoursSubtracted += duration;
-          }
-          if (b.calendarEventId) {
-            deleteCalendarEvent(b.calendarEventId).catch(console.error);
-          }
-          planModified = true;
-          return false;
-        }
-        return true;
-      });
-
-      if (planModified) {
-        plan.blocks = newBlocks;
-        await AsyncStorage.setItem(key, JSON.stringify(plan));
-      }
+  for (const [key, raw] of entries) {
+    if (!raw) continue;
+    const plan = JSON.parse(raw) as WeeklyPlan;
+    const scrubbed = scrubPlanBlocks(plan.blocks, templateIds, templates, categoryId);
+    totalHoursSubtracted += scrubbed.hoursSubtracted;
+    calendarEventIds.push(...scrubbed.calendarEventIds);
+    if (scrubbed.blocks.length !== plan.blocks.length) {
+      modifiedEntries.push([key, JSON.stringify({ ...plan, blocks: scrubbed.blocks })]);
     }
   }
+
+  if (modifiedEntries.length > 0) {
+    await AsyncStorage.multiSet(modifiedEntries);
+  }
+  calendarEventIds.forEach((id) => deleteCalendarEvent(id).catch(console.error));
 
   return totalHoursSubtracted;
 }
