@@ -547,16 +547,95 @@ export default function ManageBlocksScreen({ navigation }: any) {
       >
         <KeyboardAvoidingView
           style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>
-              {editCatId ? t('manage.editCategory') : t('manage.newCategory')}
-            </Text>
+          <ScrollView
+            style={styles.modalScrollView}
+            contentContainerStyle={styles.modalScrollContent}
+            keyboardShouldPersistTaps="handled"
+            bounces={false}
+          >
+            <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                {editCatId ? t('manage.editCategory') : t('manage.newCategory')}
+              </Text>
 
-            <>
+              <>
+                <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
+                  {t('manage.blockName')}
+                </Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    {
+                      backgroundColor: colors.background,
+                      color: colors.text,
+                      borderColor: colors.border,
+                    },
+                  ]}
+                  value={catName}
+                  onChangeText={setCatName}
+                />
+
+                <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
+                  {t('manage.iconLabel') || 'Icon'}
+                </Text>
+                <TouchableOpacity
+                  style={[
+                    styles.input,
+                    {
+                      backgroundColor: colors.background,
+                      borderColor: colors.border,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    },
+                  ]}
+                  onPress={() => setIconPickerVisible(true)}
+                >
+                  <MaterialCommunityIcons
+                    name={catEmoji as any}
+                    size={24}
+                    color={colors.text}
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{ color: colors.textSecondary }}>
+                    {t('manage.tapToChange') || 'Tap to change...'}
+                  </Text>
+                </TouchableOpacity>
+                <IconPicker
+                  visible={iconPickerVisible}
+                  onSelect={(i) => {
+                    setCatEmoji(i);
+                    setIconPickerVisible(false);
+                  }}
+                  onClose={() => setIconPickerVisible(false)}
+                />
+
+                <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
+                  {t('manage.colorLabel') || 'Color'}
+                </Text>
+                <View style={[styles.chipsRow, { marginBottom: Spacing.md }]}>
+                  {CATEGORY_COLORS.map((c) => (
+                    <Pressable
+                      key={c}
+                      onPress={() => setCatColor(c)}
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 16,
+                        backgroundColor: c,
+                        borderWidth: 2,
+                        borderColor: catColor === c ? colors.text : 'transparent',
+                        marginRight: 8,
+                        marginBottom: 8,
+                      }}
+                    />
+                  ))}
+                </View>
+              </>
+
               <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-                {t('manage.blockName')}
+                {t('manage.targetHoursInput')}
               </Text>
               <TextInput
                 style={[
@@ -567,101 +646,31 @@ export default function ManageBlocksScreen({ navigation }: any) {
                     borderColor: colors.border,
                   },
                 ]}
-                value={catName}
-                onChangeText={setCatName}
+                keyboardType="numeric"
+                value={catTargetHours}
+                onChangeText={setCatTargetHours}
+                autoFocus
               />
-
-              <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-                {t('manage.iconLabel') || 'Icon'}
-              </Text>
-              <TouchableOpacity
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.background,
-                    borderColor: colors.border,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  },
-                ]}
-                onPress={() => setIconPickerVisible(true)}
-              >
-                <MaterialCommunityIcons
-                  name={catEmoji as any}
-                  size={24}
-                  color={colors.text}
-                  style={{ marginRight: 8 }}
-                />
-                <Text style={{ color: colors.textSecondary }}>
-                  {t('manage.tapToChange') || 'Tap to change...'}
-                </Text>
-              </TouchableOpacity>
-              <IconPicker
-                visible={iconPickerVisible}
-                onSelect={(i) => {
-                  setCatEmoji(i);
-                  setIconPickerVisible(false);
-                }}
-                onClose={() => setIconPickerVisible(false)}
-              />
-
-              <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-                {t('manage.colorLabel') || 'Color'}
-              </Text>
-              <View style={[styles.chipsRow, { marginBottom: Spacing.md }]}>
-                {CATEGORY_COLORS.map((c) => (
-                  <Pressable
-                    key={c}
-                    onPress={() => setCatColor(c)}
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 16,
-                      backgroundColor: c,
-                      borderWidth: 2,
-                      borderColor: catColor === c ? colors.text : 'transparent',
-                      marginRight: 8,
-                      marginBottom: 8,
-                    }}
-                  />
-                ))}
+              <View style={styles.modalButtons}>
+                <Pressable
+                  style={[styles.modalButton, { backgroundColor: colors.background }]}
+                  onPress={() => setCatModalVisible(false)}
+                >
+                  <Text style={[styles.modalButtonText, { color: colors.textSecondary }]}>
+                    {t('common.cancel')}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.modalButton, { backgroundColor: colors.primary }]}
+                  onPress={saveCategory}
+                >
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>
+                    {t('common.save')}
+                  </Text>
+                </Pressable>
               </View>
-            </>
-
-            <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-              {t('manage.targetHoursInput')}
-            </Text>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: colors.background,
-                  color: colors.text,
-                  borderColor: colors.border,
-                },
-              ]}
-              keyboardType="numeric"
-              value={catTargetHours}
-              onChangeText={setCatTargetHours}
-              autoFocus
-            />
-            <View style={styles.modalButtons}>
-              <Pressable
-                style={[styles.modalButton, { backgroundColor: colors.background }]}
-                onPress={() => setCatModalVisible(false)}
-              >
-                <Text style={[styles.modalButtonText, { color: colors.textSecondary }]}>
-                  {t('common.cancel')}
-                </Text>
-              </Pressable>
-              <Pressable
-                style={[styles.modalButton, { backgroundColor: colors.primary }]}
-                onPress={saveCategory}
-              >
-                <Text style={[styles.modalButtonText, { color: '#fff' }]}>{t('common.save')}</Text>
-              </Pressable>
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -669,122 +678,133 @@ export default function ManageBlocksScreen({ navigation }: any) {
       <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={resetModal}>
         <KeyboardAvoidingView
           style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>{t('manage.newBlock')}</Text>
+          <ScrollView
+            style={styles.modalScrollView}
+            contentContainerStyle={styles.modalScrollContent}
+            keyboardShouldPersistTaps="handled"
+            bounces={false}
+          >
+            <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                {t('manage.newBlock')}
+              </Text>
 
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: colors.background,
-                  color: colors.text,
-                  borderColor: colors.border,
-                },
-              ]}
-              placeholder={t('manage.blockName')}
-              placeholderTextColor={colors.textSecondary}
-              value={blockName}
-              onChangeText={setBlockName}
-            />
-
-            <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-              {t('manage.category')}
-            </Text>
-            <View style={styles.chipsRow}>
-              {activeCategories.map((c) => {
-                const selected = selectedCategoryId === c.id;
-                return (
-                  <Pressable
-                    key={c.id}
-                    style={[
-                      styles.chip,
-                      {
-                        backgroundColor: selected ? c.color : colors.surfaceAlt,
-                        borderColor: selected ? c.color : colors.border,
-                      },
-                    ]}
-                    onPress={() => {
-                      const prevCat = selectedCategoryId
-                        ? getCategoryById(selectedCategoryId)
-                        : null;
-                      const prevCatName = prevCat ? getCategoryDisplayName(prevCat) : '';
-
-                      if (!blockName.trim() || blockName.trim() === prevCatName) {
-                        setBlockName(getCategoryDisplayName(c));
-                      }
-                      setSelectedCategoryId(c.id);
-                    }}
-                  >
-                    <Text
-                      style={[styles.chipText, { color: selected ? '#fff' : colors.text }]}
-                      numberOfLines={1}
-                    >
-                      <MaterialCommunityIcons
-                        name={c.emoji as any}
-                        size={16}
-                        color={selected ? '#fff' : colors.text}
-                      />{' '}
-                      {getCategoryDisplayName(c)}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-              {t('manage.duration')}
-            </Text>
-            <View style={styles.chipsRow}>
-              {DURATION_OPTIONS.map((d) => {
-                const selected = selectedDuration === d;
-                return (
-                  <Pressable
-                    key={d}
-                    style={[
-                      styles.durChip,
-                      {
-                        backgroundColor: selected ? colors.primary : colors.surfaceAlt,
-                        borderColor: selected ? colors.primary : colors.border,
-                      },
-                    ]}
-                    onPress={() => setSelectedDuration(d)}
-                  >
-                    <Text style={[styles.durChipText, { color: selected ? '#fff' : colors.text }]}>
-                      {d}h
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            <View style={styles.modalButtons}>
-              <Pressable
-                style={[styles.modalButton, { backgroundColor: colors.background }]}
-                onPress={resetModal}
-              >
-                <Text style={[styles.modalButtonText, { color: colors.textSecondary }]}>
-                  {t('common.cancel')}
-                </Text>
-              </Pressable>
-              <Pressable
+              <TextInput
                 style={[
-                  styles.modalButton,
+                  styles.input,
                   {
-                    backgroundColor: colors.primary,
-                    opacity: blockName.trim() && selectedCategoryId ? 1 : 0.5,
+                    backgroundColor: colors.background,
+                    color: colors.text,
+                    borderColor: colors.border,
                   },
                 ]}
-                onPress={handleCreateBlock}
-                disabled={!blockName.trim() || !selectedCategoryId}
-              >
-                <Text style={[styles.modalButtonText, { color: '#fff' }]}>
-                  {t('common.create')}
-                </Text>
-              </Pressable>
+                placeholder={t('manage.blockName')}
+                placeholderTextColor={colors.textSecondary}
+                value={blockName}
+                onChangeText={setBlockName}
+              />
+
+              <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
+                {t('manage.category')}
+              </Text>
+              <View style={styles.chipsRow}>
+                {activeCategories.map((c) => {
+                  const selected = selectedCategoryId === c.id;
+                  return (
+                    <Pressable
+                      key={c.id}
+                      style={[
+                        styles.chip,
+                        {
+                          backgroundColor: selected ? c.color : colors.surfaceAlt,
+                          borderColor: selected ? c.color : colors.border,
+                        },
+                      ]}
+                      onPress={() => {
+                        const prevCat = selectedCategoryId
+                          ? getCategoryById(selectedCategoryId)
+                          : null;
+                        const prevCatName = prevCat ? getCategoryDisplayName(prevCat) : '';
+
+                        if (!blockName.trim() || blockName.trim() === prevCatName) {
+                          setBlockName(getCategoryDisplayName(c));
+                        }
+                        setSelectedCategoryId(c.id);
+                      }}
+                    >
+                      <Text
+                        style={[styles.chipText, { color: selected ? '#fff' : colors.text }]}
+                        numberOfLines={1}
+                      >
+                        <MaterialCommunityIcons
+                          name={c.emoji as any}
+                          size={16}
+                          color={selected ? '#fff' : colors.text}
+                        />{' '}
+                        {getCategoryDisplayName(c)}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
+                {t('manage.duration')}
+              </Text>
+              <View style={styles.chipsRow}>
+                {DURATION_OPTIONS.map((d) => {
+                  const selected = selectedDuration === d;
+                  return (
+                    <Pressable
+                      key={d}
+                      style={[
+                        styles.durChip,
+                        {
+                          backgroundColor: selected ? colors.primary : colors.surfaceAlt,
+                          borderColor: selected ? colors.primary : colors.border,
+                        },
+                      ]}
+                      onPress={() => setSelectedDuration(d)}
+                    >
+                      <Text
+                        style={[styles.durChipText, { color: selected ? '#fff' : colors.text }]}
+                      >
+                        {d}h
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              <View style={styles.modalButtons}>
+                <Pressable
+                  style={[styles.modalButton, { backgroundColor: colors.background }]}
+                  onPress={resetModal}
+                >
+                  <Text style={[styles.modalButtonText, { color: colors.textSecondary }]}>
+                    {t('common.cancel')}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.modalButton,
+                    {
+                      backgroundColor: colors.primary,
+                      opacity: blockName.trim() && selectedCategoryId ? 1 : 0.5,
+                    },
+                  ]}
+                  onPress={handleCreateBlock}
+                  disabled={!blockName.trim() || !selectedCategoryId}
+                >
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>
+                    {t('common.create')}
+                  </Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
@@ -840,6 +860,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     padding: Spacing.lg,
+  },
+  modalScrollView: {
+    width: '100%',
+  },
+  modalScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   modalContent: { borderRadius: BorderRadius.lg, padding: Spacing.lg },
   modalTitle: { fontSize: FontSize.xl, fontWeight: '700', marginBottom: Spacing.md },
