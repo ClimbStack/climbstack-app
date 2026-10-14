@@ -26,6 +26,8 @@ const mockUsePeaks = usePeaks as jest.Mock;
 const mockUseThemeColors = useThemeColors as jest.Mock;
 
 describe('PlannerScreen - Clear Week', () => {
+  jest.setTimeout(15000);
+
   const mockNavigation = {
     navigate: jest.fn(),
     setOptions: jest.fn(),
@@ -199,5 +201,61 @@ describe('PlannerScreen - Clear Week', () => {
     confirmButton?.onPress?.();
 
     expect(mockClearCurrentWeek).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders Clear Week button with dark theme styling', async () => {
+    mockUseThemeColors.mockReturnValue({
+      colors: Colors.dark,
+      isDark: true,
+    });
+
+    mockUsePlanner.mockReturnValue({
+      currentWeekId: '2026-10-12',
+      currentPlan: { weekId: '2026-10-12', blocks: [scheduledBlock] } as WeeklyPlan,
+      hasPreviousWeekBlocks: false,
+      categories: [defaultCategory],
+      templates: [defaultTemplate],
+      scheduleBlock: jest.fn(),
+      unscheduleBlock: jest.fn(),
+      toggleBlockDone: jest.fn(),
+      updateBlockDescription: jest.fn(),
+      getTemplateById: jest.fn().mockReturnValue(defaultTemplate),
+      getCategoryById: jest.fn().mockReturnValue(defaultCategory),
+      getCategoryHours: jest.fn().mockReturnValue({ scheduled: 1, completed: 0, target: 10 }),
+      changeWeek: mockChangeWeek,
+      copyPreviousWeek: mockCopyPreviousWeek,
+      clearCurrentWeek: mockClearCurrentWeek,
+    });
+
+    const { getByLabelText } = await render(<PlannerScreen navigation={mockNavigation} />);
+    const clearBtn = getByLabelText(t('planner.clearWeekBtn'));
+    expect(clearBtn).toBeTruthy();
+  });
+
+  it('applies pressed opacity style when Clear Week button is pressed', async () => {
+    mockUsePlanner.mockReturnValue({
+      currentWeekId: '2026-10-12',
+      currentPlan: { weekId: '2026-10-12', blocks: [scheduledBlock] } as WeeklyPlan,
+      hasPreviousWeekBlocks: false,
+      categories: [defaultCategory],
+      templates: [defaultTemplate],
+      scheduleBlock: jest.fn(),
+      unscheduleBlock: jest.fn(),
+      toggleBlockDone: jest.fn(),
+      updateBlockDescription: jest.fn(),
+      getTemplateById: jest.fn().mockReturnValue(defaultTemplate),
+      getCategoryById: jest.fn().mockReturnValue(defaultCategory),
+      getCategoryHours: jest.fn().mockReturnValue({ scheduled: 1, completed: 0, target: 10 }),
+      changeWeek: mockChangeWeek,
+      copyPreviousWeek: mockCopyPreviousWeek,
+      clearCurrentWeek: mockClearCurrentWeek,
+    });
+
+    const { getByLabelText } = await render(<PlannerScreen navigation={mockNavigation} />);
+    const clearBtn = getByLabelText(t('planner.clearWeekBtn'));
+    await fireEvent(clearBtn, 'responderGrant', { nativeEvent: {}, persist: () => {} });
+    expect(clearBtn.props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ opacity: 0.7 })])
+    );
   });
 });

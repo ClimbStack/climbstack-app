@@ -582,8 +582,7 @@ export function PlannerProvider({ children }: { children: React.ReactNode }) {
   }, [currentWeekId, plans, templates, categories]);
 
   const clearCurrentWeek = useCallback(async () => {
-    const planToClear = plans[currentWeekId] || { weekId: currentWeekId, blocks: [] };
-    const calendarEventIds = planToClear.blocks
+    const calendarEventIds = currentPlan.blocks
       .map((b) => b.calendarEventId)
       .filter((id): id is string => Boolean(id));
 
@@ -606,7 +605,7 @@ export function PlannerProvider({ children }: { children: React.ReactNode }) {
         calendarEventIds.map((eventId) => deleteCalendarEvent(eventId).catch(console.error))
       );
     }
-  }, [currentWeekId, plans]);
+  }, [currentPlan.blocks, currentWeekId]);
 
   const updateBlockDescription = useCallback((blockId: string, desc: string) => {
     setPlans((prev) => {
