@@ -286,7 +286,9 @@ describe('KeyboardAvoidingView on Android and iOS across modals', () => {
   it('configures KeyboardAvoidingView with height behavior on Android in PlannerScreen edit modal and handles cancel', async () => {
     Object.defineProperty(Platform, 'OS', { value: 'android', writable: true, configurable: true });
 
-    const { getByText } = await render(<PlannerScreen navigation={mockNavigation as any} />);
+    const { getByText, getByDisplayValue } = await render(
+      <PlannerScreen navigation={mockNavigation as any} />
+    );
     await fireEvent.press(getByText('Deep Work'));
 
     expect(capturedProps).toEqual(
@@ -297,6 +299,20 @@ describe('KeyboardAvoidingView on Android and iOS across modals', () => {
       ])
     );
 
+    const descInput = getByDisplayValue('My task');
+    await fireEvent.changeText(descInput, 'Updated task');
+
+    const title = getByText(t('planner.blockDetails'));
+    let current: any = title.parent;
+    while (current && !current.props?.onRequestClose) {
+      current = current.parent;
+    }
+    await act(async () => {
+      current?.props?.onRequestClose?.();
+    });
+
+    // Re-open and cancel via button
+    await fireEvent.press(getByText('Deep Work'));
     await fireEvent.press(getByText(t('common.cancel')));
   });
 
@@ -398,7 +414,7 @@ describe('KeyboardAvoidingView on Android and iOS across modals', () => {
     const targetInput = getByDisplayValue('10');
     await fireEvent.changeText(targetInput, '14');
 
-    const tapToChange = getByText(t('manage.tapToChange') || 'Tap to change...');
+    const tapToChange = getByText(t('manage.tapToChange'));
     await fireEvent.press(tapToChange);
 
     // Cancel IconPicker (covers line 611: onClose)
@@ -427,6 +443,13 @@ describe('KeyboardAvoidingView on Android and iOS across modals', () => {
     // Cancel Category modal (covers line 657)
     const cancelButtons = getAllByText(t('common.cancel'));
     await fireEvent.press(cancelButtons[cancelButtons.length - 1]);
+
+    // Also test editing an existing category to cover the editCatId branch (line 560)
+    const workCategory = getAllByText('Work')[0];
+    await fireEvent.press(workCategory);
+    expect(getByText(t('manage.editCategory'))).toBeTruthy();
+    const cancelButtonsAfterEdit = getAllByText(t('common.cancel'));
+    await fireEvent.press(cancelButtonsAfterEdit[cancelButtonsAfterEdit.length - 1]);
   });
 
   it('handles New Block modal with category chips, duration selection, cancel and creation', async () => {

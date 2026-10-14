@@ -578,7 +578,7 @@ export default function ManageBlocksScreen({ navigation }: any) {
                 />
 
                 <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-                  {t('manage.iconLabel') || 'Icon'}
+                  {t('manage.iconLabel')}
                 </Text>
                 <TouchableOpacity
                   style={[
@@ -598,9 +598,7 @@ export default function ManageBlocksScreen({ navigation }: any) {
                     color={colors.text}
                     style={{ marginRight: 8 }}
                   />
-                  <Text style={{ color: colors.textSecondary }}>
-                    {t('manage.tapToChange') || 'Tap to change...'}
-                  </Text>
+                  <Text style={{ color: colors.textSecondary }}>{t('manage.tapToChange')}</Text>
                 </TouchableOpacity>
                 <IconPicker
                   visible={iconPickerVisible}
@@ -612,7 +610,7 @@ export default function ManageBlocksScreen({ navigation }: any) {
                 />
 
                 <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
-                  {t('manage.colorLabel') || 'Color'}
+                  {t('manage.colorLabel')}
                 </Text>
                 <View style={[styles.chipsRow, { marginBottom: Spacing.md }]}>
                   {CATEGORY_COLORS.map((c) => (
