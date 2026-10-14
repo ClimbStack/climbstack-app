@@ -554,5 +554,31 @@ describe('PlannerScreen', () => {
 
       expect(getByText(t('planner.scheduleBlock'))).toBeTruthy();
     });
+
+    it('handles onRequestClose on modals', async () => {
+      setupDefaultPlannerMock();
+
+      const { container, getAllByText, getByText, queryByText } = await render(
+        <PlannerScreen navigation={mockNavigation} />
+      );
+
+      const addButtons = getAllByText('+');
+      await fireEvent.press(addButtons[0]);
+
+      const modals = container.queryAll(
+        (node: any) => typeof node.props?.onRequestClose === 'function'
+      );
+      const scheduleModal = modals[modals.length - 1];
+      await fireEvent(scheduleModal, 'requestClose');
+      expect(queryByText(t('planner.scheduleBlock'))).toBeNull();
+
+      await fireEvent.press(getByText('Reading'));
+      const activeModals = container.queryAll(
+        (node: any) => typeof node.props?.onRequestClose === 'function'
+      );
+      const editModal = activeModals[0];
+      await fireEvent(editModal, 'requestClose');
+      expect(queryByText(t('planner.blockDetails'))).toBeNull();
+    });
   });
 });
