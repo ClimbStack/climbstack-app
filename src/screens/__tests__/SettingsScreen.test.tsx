@@ -161,12 +161,99 @@ describe('SettingsScreen', () => {
     expect(queryByText(t('settings.selectTheme'))).toBeNull();
   });
 
-  it('opens and closes replay tutorial onboarding modal', async () => {
+  it('closes theme modal via close button', async () => {
+    const { getByText, getByTestId, queryByTestId } = await render(<SettingsScreen />);
+
+    await fireEvent.press(getByText(t('settings.themeSystem')));
+    expect(getByTestId('theme-modal')).toBeTruthy();
+
+    await fireEvent.press(getByTestId('theme-modal-close'));
+    expect(queryByTestId('theme-modal-close')).toBeNull();
+  });
+
+  it('closes theme modal via overlay click', async () => {
+    const { getByText, getByTestId, queryByTestId } = await render(<SettingsScreen />);
+
+    await fireEvent.press(getByText(t('settings.themeSystem')));
+    expect(getByTestId('theme-modal')).toBeTruthy();
+
+    await fireEvent.press(getByTestId('theme-modal-overlay'));
+    expect(queryByTestId('theme-modal-overlay')).toBeNull();
+  });
+
+  it('stops propagation when clicking modal content', async () => {
+    const { getByText, getByTestId } = await render(<SettingsScreen />);
+
+    await fireEvent.press(getByText(t('settings.themeSystem')));
+    const content = getByTestId('theme-modal-content');
+    const stopPropagation = jest.fn();
+
+    await fireEvent.press(content, { stopPropagation });
+    expect(stopPropagation).toHaveBeenCalled();
+  });
+
+  it('handles onRequestClose on theme modal', async () => {
+    const { getByText, getByTestId, queryByTestId } = await render(<SettingsScreen />);
+
+    await fireEvent.press(getByText(t('settings.themeSystem')));
+    const modal = getByTestId('theme-modal');
+
+    await fireEvent(modal, 'requestClose');
+    expect(queryByTestId('theme-modal-close')).toBeNull();
+  });
+
+  it('closes theme modal without calling setThemeMode if current theme is pressed', async () => {
+    const { getByText, getAllByText, queryByText } = await render(<SettingsScreen />);
+
+    await fireEvent.press(getByText(t('settings.themeSystem')));
+    expect(getByText(t('settings.selectTheme'))).toBeTruthy();
+
+    const systemOptions = getAllByText(t('settings.themeSystem'));
+    await fireEvent.press(systemOptions[1]);
+
+    expect(mockSetThemeMode).not.toHaveBeenCalled();
+    expect(queryByText(t('settings.selectTheme'))).toBeNull();
+  });
+
+  it('handles selecting theme when setThemeMode is undefined', async () => {
+    mockUseThemeColors.mockReturnValueOnce({
+      colors: Colors.light,
+      isDark: false,
+      themeMode: 'system',
+      setThemeMode: undefined,
+    });
+
+    const { getByText, queryByText } = await render(<SettingsScreen />);
+
+    await fireEvent.press(getByText(t('settings.themeSystem')));
+    expect(getByText(t('settings.selectTheme'))).toBeTruthy();
+
+    await fireEvent.press(getByText(t('settings.themeLight')));
+    expect(queryByText(t('settings.selectTheme'))).toBeNull();
+  });
+
+  it('falls back to default theme option when themeMode is unknown or missing', async () => {
+    mockUseThemeColors.mockReturnValueOnce({
+      colors: Colors.light,
+      isDark: false,
+      themeMode: 'unknown-mode' as any,
+      setThemeMode: mockSetThemeMode,
+    });
+
     const { getByText } = await render(<SettingsScreen />);
+    expect(getByText(t('settings.themeSystem'))).toBeTruthy();
+  });
+
+  it('opens and closes replay tutorial onboarding modal', async () => {
+    const { getByText, queryByText } = await render(<SettingsScreen />);
 
     const replayBtn = getByText(t('settings.replayTutorial'));
     await fireEvent.press(replayBtn);
 
-    expect(getByText(t('onboarding.skip'))).toBeTruthy();
+    const skipBtn = getByText(t('onboarding.skip'));
+    expect(skipBtn).toBeTruthy();
+
+    await fireEvent.press(skipBtn);
+    expect(queryByText(t('onboarding.skip'))).toBeNull();
   });
 });

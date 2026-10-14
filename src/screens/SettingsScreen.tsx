@@ -476,10 +476,12 @@ export default function SettingsScreen() {
         transparent
         animationType="fade"
         onRequestClose={() => setShowThemeModal(false)}
+        testID="theme-modal"
       >
         <Pressable
           style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
           onPress={() => setShowThemeModal(false)}
+          testID="theme-modal-overlay"
         >
           <Pressable
             style={[
@@ -487,6 +489,7 @@ export default function SettingsScreen() {
               { backgroundColor: colors.surface, borderColor: colors.border },
             ]}
             onPress={(e) => e.stopPropagation()}
+            testID="theme-modal-content"
           >
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: colors.text }]}>
@@ -497,6 +500,7 @@ export default function SettingsScreen() {
                 hitSlop={8}
                 accessibilityRole="button"
                 accessibilityLabel={t('common.cancel')}
+                testID="theme-modal-close"
               >
                 <MaterialCommunityIcons name="close" size={24} color={colors.textSecondary} />
               </Pressable>
