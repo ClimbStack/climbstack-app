@@ -18,6 +18,7 @@ SplashScreen.preventAutoHideAsync();
 import { PeaksProvider } from './src/store/PeaksContext';
 import { PlannerProvider } from './src/store/PlannerContext';
 import { LocaleProvider, useLocale } from './src/store/LocaleContext';
+import { ThemeProvider } from './src/store/ThemeContext';
 import { Colors } from './src/utils/theme';
 import type {
   RootStackParamList,
@@ -88,9 +89,7 @@ function BlocchiStack() {
 import { t } from './src/utils/i18n';
 
 function TabNavigator() {
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
-  const colors = isDark ? Colors.dark : Colors.light;
+  const { colors } = useThemeColors();
 
   return (
     <Tab.Navigator
@@ -191,16 +190,15 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { useThemeColors } from './src/utils/useThemeColors';
 
 function RootNavigator() {
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
   const { locale, isReloading } = useLocale();
-  const { colors } = useThemeColors();
+  const { colors, isDark } = useThemeColors();
 
   return (
     <>
       <NavigationContainer theme={isDark ? DarkNavTheme : LightNavTheme} key={locale}>
         <TabNavigator />
       </NavigationContainer>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       {isReloading && (
         <View
           style={[
@@ -237,14 +235,15 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <LocaleProvider>
-        <PeaksProvider>
-          <PlannerProvider>
-            <RootNavigator />
-            <StatusBar style="auto" />
-          </PlannerProvider>
-        </PeaksProvider>
-      </LocaleProvider>
+      <ThemeProvider>
+        <LocaleProvider>
+          <PeaksProvider>
+            <PlannerProvider>
+              <RootNavigator />
+            </PlannerProvider>
+          </PeaksProvider>
+        </LocaleProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

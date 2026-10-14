@@ -27,6 +27,9 @@ jest.mock('expo-file-system/legacy', () => ({
   documentDirectory: 'file:///test-doc-dir/',
   writeAsStringAsync: jest.fn(),
   readAsStringAsync: jest.fn(),
+  EncodingType: {
+    UTF8: 'utf8',
+  },
 }));
 
 jest.mock('expo-sharing', () => ({
@@ -59,6 +62,7 @@ describe('SettingsScreen', () => {
   const mockChangeLocale = jest.fn();
   const mockRefreshPeaks = jest.fn();
   const mockRefreshPlanner = jest.fn();
+  const mockSetThemeMode = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -66,6 +70,8 @@ describe('SettingsScreen', () => {
     mockUseThemeColors.mockReturnValue({
       colors: Colors.light,
       isDark: false,
+      themeMode: 'system',
+      setThemeMode: mockSetThemeMode,
     });
 
     mockUseLocale.mockReturnValue({
@@ -86,6 +92,7 @@ describe('SettingsScreen', () => {
     const { getByText } = await render(<SettingsScreen />);
 
     expect(getByText(t('settings.langTitle'))).toBeTruthy();
+    expect(getByText(t('settings.themeTitle'))).toBeTruthy();
     expect(getByText(t('settings.backupTitle'))).toBeTruthy();
     expect(getByText(t('settings.aboutTitle'))).toBeTruthy();
   });
@@ -136,6 +143,22 @@ describe('SettingsScreen', () => {
 
     expect(mockChangeLocale).toHaveBeenCalledWith('it');
     expect(queryByText(t('common.cancel'))).toBeNull();
+  });
+
+  it('opens theme modal and allows selecting a theme mode', async () => {
+    const { getByText, queryByText } = await render(<SettingsScreen />);
+
+    const themeTile = getByText(t('settings.themeSystem'));
+    await fireEvent.press(themeTile);
+
+    expect(getByText(t('settings.selectTheme'))).toBeTruthy();
+    expect(getByText(t('settings.themeDark'))).toBeTruthy();
+    expect(getByText(t('settings.themeLight'))).toBeTruthy();
+
+    await fireEvent.press(getByText(t('settings.themeDark')));
+
+    expect(mockSetThemeMode).toHaveBeenCalledWith('dark');
+    expect(queryByText(t('settings.selectTheme'))).toBeNull();
   });
 
   it('opens and closes replay tutorial onboarding modal', async () => {
