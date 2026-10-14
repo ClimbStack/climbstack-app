@@ -17,7 +17,7 @@ import * as Sharing from 'expo-sharing';
 import { Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useThemeColors } from '../utils/useThemeColors';
+import { useThemeColors, type ThemeMode } from '../utils/useThemeColors';
 import { Spacing, FontSize, BorderRadius } from '../utils/theme';
 import { t, SUPPORTED_LANGUAGES, getSupportedLocale } from '../utils/i18n';
 import { useLocale } from '../store/LocaleContext';
@@ -25,17 +25,33 @@ import { usePeaks } from '../store/PeaksContext';
 import { usePlanner } from '../store/PlannerContext';
 import OnboardingModal from '../components/OnboardingModal';
 
+interface ThemeOption {
+  mode: ThemeMode;
+  labelKey: string;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+}
+
+const THEME_OPTIONS: ThemeOption[] = [
+  { mode: 'system', labelKey: 'settings.themeSystem', icon: 'theme-light-dark' },
+  { mode: 'light', labelKey: 'settings.themeLight', icon: 'white-balance-sunny' },
+  { mode: 'dark', labelKey: 'settings.themeDark', icon: 'weather-night' },
+];
+
 export default function SettingsScreen() {
-  const { colors } = useThemeColors();
+  const { colors, themeMode, setThemeMode } = useThemeColors();
   const [isImporting, setIsImporting] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showThemeModal, setShowThemeModal] = useState(false);
   const { locale, changeLocale } = useLocale();
   const { refreshData: refreshPeaks } = usePeaks();
   const { refreshData: refreshPlanner } = usePlanner();
   const activeLang = getSupportedLocale(locale);
   const currentLanguageItem =
     SUPPORTED_LANGUAGES.find((item) => item.code === activeLang) ?? SUPPORTED_LANGUAGES[0];
+  const currentThemeOption =
+    THEME_OPTIONS.find((opt) => opt.mode === themeMode) ?? THEME_OPTIONS[0];
+  const currentThemeLabel = t(currentThemeOption.labelKey);
 
   const changeLanguage = async (lang: string) => {
     await changeLocale(lang);
@@ -174,6 +190,39 @@ export default function SettingsScreen() {
           >
             <Text style={[styles.languageTileLabel, { color: colors.text }]}>
               {currentLanguageItem.label}
+            </Text>
+            <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textSecondary} />
+          </Pressable>
+        </View>
+
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: colors.surface, borderColor: colors.border, marginTop: Spacing.xl },
+          ]}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md }}>
+            <MaterialCommunityIcons
+              name="theme-light-dark"
+              size={24}
+              color={colors.primary}
+              style={{ marginRight: Spacing.sm }}
+            />
+            <Text style={[styles.title, { color: colors.text, marginBottom: 0 }]}>
+              {t('settings.themeTitle')}
+            </Text>
+          </View>
+          <Pressable
+            style={[
+              styles.languageTile,
+              { backgroundColor: colors.surfaceAlt, borderColor: colors.border },
+            ]}
+            onPress={() => setShowThemeModal(true)}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('settings.themeTitle')}: ${currentThemeLabel}`}
+          >
+            <Text style={[styles.languageTileLabel, { color: colors.text }]}>
+              {currentThemeLabel}
             </Text>
             <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textSecondary} />
           </Pressable>
@@ -411,6 +460,91 @@ export default function SettingsScreen() {
                     >
                       {lang.label}
                     </Text>
+                    {isSelected && (
+                      <MaterialCommunityIcons name="check" size={20} color={colors.primary} />
+                    )}
+                  </Pressable>
+                );
+              })}
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      <Modal
+        visible={showThemeModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowThemeModal(false)}
+        testID="theme-modal"
+      >
+        <Pressable
+          style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
+          onPress={() => setShowThemeModal(false)}
+          testID="theme-modal-overlay"
+        >
+          <Pressable
+            style={[
+              styles.modalContent,
+              { backgroundColor: colors.surface, borderColor: colors.border },
+            ]}
+            onPress={(e) => e.stopPropagation()}
+            testID="theme-modal-content"
+          >
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                {t('settings.selectTheme')}
+              </Text>
+              <Pressable
+                onPress={() => setShowThemeModal(false)}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel={t('common.cancel')}
+                testID="theme-modal-close"
+              >
+                <MaterialCommunityIcons name="close" size={24} color={colors.textSecondary} />
+              </Pressable>
+            </View>
+
+            <View style={styles.languagesList}>
+              {THEME_OPTIONS.map((opt) => {
+                const isSelected = themeMode === opt.mode;
+                return (
+                  <Pressable
+                    key={opt.mode}
+                    style={[
+                      styles.langOption,
+                      {
+                        backgroundColor: isSelected ? colors.surfaceAlt : 'transparent',
+                        borderColor: isSelected ? colors.primary : colors.border,
+                      },
+                    ]}
+                    onPress={async () => {
+                      setShowThemeModal(false);
+                      if (!isSelected && setThemeMode) {
+                        await setThemeMode(opt.mode);
+                      }
+                    }}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <MaterialCommunityIcons
+                        name={opt.icon}
+                        size={20}
+                        color={isSelected ? colors.primary : colors.textSecondary}
+                        style={{ marginRight: Spacing.sm }}
+                      />
+                      <Text
+                        style={[
+                          styles.langOptionText,
+                          {
+                            color: isSelected ? colors.primary : colors.text,
+                            fontWeight: isSelected ? '700' : '500',
+                          },
+                        ]}
+                      >
+                        {t(opt.labelKey)}
+                      </Text>
+                    </View>
                     {isSelected && (
                       <MaterialCommunityIcons name="check" size={20} color={colors.primary} />
                     )}
