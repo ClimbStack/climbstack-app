@@ -5,8 +5,8 @@ authors:
     given-names: 'Giovanni'
     orcid: 'https://orcid.org/0009-0000-8900-9586'
 title: 'ClimbStack: Defeating Decision Fatigue via Gamified Time Management'
-version: 1.3.0
-date-released: '2026-09-25'
+version: 1.4.0
+date-released: '2026-10-14'
 url: 'https://github.com/ClimbStack/climbstack-app'
 repository-code: 'https://github.com/ClimbStack/climbstack-app'
 abstract: 'ClimbStack is an offline, privacy-first React Native application that leverages Agent-Driven Development to bridge the gap between long-term ambitions (Peaks) and daily execution (Weekly Block Planner).'

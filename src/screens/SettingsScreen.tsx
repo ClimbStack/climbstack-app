@@ -312,20 +312,19 @@ export default function SettingsScreen() {
           </Pressable>
 
           <Pressable
-            style={[
-              styles.linkBtn,
-              { backgroundColor: colors.surfaceAlt, marginTop: Spacing.sm, opacity: 0.5 },
-            ]}
-            disabled={true}
+            style={[styles.linkBtn, { backgroundColor: colors.surfaceAlt, marginTop: Spacing.sm }]}
+            onPress={() =>
+              Linking.openURL('https://play.google.com/store/apps/details?id=com.gizano.levelup')
+            }
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <MaterialCommunityIcons
                 name="google-play"
                 size={20}
-                color={colors.textSecondary}
+                color={colors.primary}
                 style={{ marginRight: 8 }}
               />
-              <Text style={{ color: colors.textSecondary, fontWeight: 'bold' }}>
+              <Text style={{ color: colors.primary, fontWeight: 'bold' }}>
                 {t('settings.feedbackPlayStore')}
               </Text>
             </View>

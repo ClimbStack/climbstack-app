@@ -226,7 +226,7 @@ const translations = {
       aboutDesc2: 'This app is 100% Open Source and built by developers, for everyone.',
       starGithub: 'Star on GitHub',
       submitIssue: 'Submit an Issue',
-      feedbackPlayStore: 'Leave a feedback on Play Store (WIP)',
+      feedbackPlayStore: 'Rate us on Google Play',
       replayTutorial: 'Replay Tutorial',
     },
     onboarding: {
@@ -451,7 +451,7 @@ const translations = {
       aboutDesc2: 'Questa app è 100% Open Source, creata da sviluppatori per tutti.',
       starGithub: 'Metti una stella su GitHub',
       submitIssue: 'Aggiungi una Issue',
-      feedbackPlayStore: 'Lascia un feedback sul Play Store (WIP)',
+      feedbackPlayStore: 'Lascia una recensione su Google Play',
       replayTutorial: 'Rivedi Tutorial',
     },
     onboarding: {
@@ -675,7 +675,7 @@ const translations = {
         'Diese App ist zu 100 % Open Source und wurde von Entwicklern für alle geschaffen.',
       starGithub: 'Mit Stern auf GitHub markieren',
       submitIssue: 'Problem melden',
-      feedbackPlayStore: 'Feedback im Play Store hinterlassen (WIP)',
+      feedbackPlayStore: 'Im Google Play Store bewerten',
       replayTutorial: 'Tutorial wiederholen',
     },
     onboarding: {
@@ -900,7 +900,7 @@ const translations = {
         'Cette application est 100 % Open Source et conçue par des développeurs pour tous.',
       starGithub: 'Mettre une étoile sur GitHub',
       submitIssue: 'Signaler un problème',
-      feedbackPlayStore: 'Laisser un avis sur le Play Store (WIP)',
+      feedbackPlayStore: 'Laisser un avis sur Google Play',
       replayTutorial: 'Rejouer le tutoriel',
     },
     onboarding: {
@@ -1125,7 +1125,7 @@ const translations = {
         'Esta aplicación es 100% de código abierto y creada por desarrolladores para todos.',
       starGithub: 'Dar una estrella en GitHub',
       submitIssue: 'Informar de un problema',
-      feedbackPlayStore: 'Dejar una reseña en Play Store (WIP)',
+      feedbackPlayStore: 'Dejar una reseña en Google Play',
       replayTutorial: 'Repetir tutorial',
     },
     onboarding: {
