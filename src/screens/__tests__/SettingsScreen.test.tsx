@@ -244,6 +244,16 @@ describe('SettingsScreen', () => {
     expect(getByText(t('settings.themeSystem'))).toBeTruthy();
   });
 
+  it('renders correctly when themeMode and setThemeMode are not provided by useThemeColors', async () => {
+    mockUseThemeColors.mockReturnValueOnce({
+      colors: Colors.light,
+      isDark: false,
+    });
+
+    const { getByText } = await render(<SettingsScreen />);
+    expect(getByText(t('settings.themeSystem'))).toBeTruthy();
+  });
+
   it('opens and closes replay tutorial onboarding modal', async () => {
     const { getByText, queryByText } = await render(<SettingsScreen />);
 

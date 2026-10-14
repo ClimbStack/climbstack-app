@@ -38,7 +38,7 @@ const THEME_OPTIONS: ThemeOption[] = [
 ];
 
 export default function SettingsScreen() {
-  const { colors, themeMode = 'system', setThemeMode } = useThemeColors();
+  const { colors, themeMode, setThemeMode } = useThemeColors();
   const [isImporting, setIsImporting] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
