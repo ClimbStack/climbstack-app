@@ -127,6 +127,7 @@ interface PlannerActions {
   toggleBlockDone: (blockId: string) => void;
   updateBlockDescription: (blockId: string, desc: string) => void;
   copyPreviousWeek: () => void;
+  clearCurrentWeek: () => Promise<void>;
   getTemplateById: (id: string) => BlockTemplate | undefined;
   getCategoryById: (id: string) => Category | undefined;
   getCategoryHours: (categoryId: string) => {
@@ -580,6 +581,32 @@ export function PlannerProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentWeekId, plans, templates, categories]);
 
+  const clearCurrentWeek = useCallback(async () => {
+    const calendarEventIds = currentPlan.blocks
+      .map((b) => b.calendarEventId)
+      .filter((id): id is string => Boolean(id));
+
+    const emptyPlan: WeeklyPlan = { weekId: currentWeekId, blocks: [] };
+
+    setPlans((prev) => ({
+      ...prev,
+      [currentWeekId]: emptyPlan,
+    }));
+
+    try {
+      await saveWeeklyPlan(emptyPlan);
+      savedPlansRef.current[currentWeekId] = emptyPlan;
+    } catch (e) {
+      console.error('Errore cancellazione settimana:', e);
+    }
+
+    if (calendarEventIds.length > 0) {
+      await Promise.all(
+        calendarEventIds.map((eventId) => deleteCalendarEvent(eventId).catch(console.error))
+      );
+    }
+  }, [currentPlan.blocks, currentWeekId]);
+
   const updateBlockDescription = useCallback((blockId: string, desc: string) => {
     setPlans((prev) => {
       let found = false;
@@ -687,6 +714,7 @@ export function PlannerProvider({ children }: { children: React.ReactNode }) {
         toggleBlockDone,
         updateBlockDescription,
         copyPreviousWeek,
+        clearCurrentWeek,
         getTemplateById,
         getCategoryById,
         getCategoryHours,

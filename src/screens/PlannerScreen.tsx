@@ -48,6 +48,7 @@ export default function PlannerScreen({ navigation }: any) {
     getCategoryHours,
     changeWeek,
     copyPreviousWeek,
+    clearCurrentWeek,
   } = usePlanner();
   const { addCompletedHours } = usePeaks();
 
@@ -121,6 +122,19 @@ export default function PlannerScreen({ navigation }: any) {
       }
       setEditBlockId(null);
     }
+  };
+
+  const handleClearWeek = () => {
+    Alert.alert(t('planner.clearWeekTitle'), t('planner.clearWeekMsg'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('planner.clearWeekConfirm'),
+        style: 'destructive',
+        onPress: () => {
+          void clearCurrentWeek();
+        },
+      },
+    ]);
   };
 
   const handleAddPress = (day: DayOfWeek) => {
@@ -243,7 +257,7 @@ export default function PlannerScreen({ navigation }: any) {
       </View>
 
       {/* Grid */}
-      {currentPlan.blocks.length === 0 && (
+      {currentPlan.blocks.length === 0 ? (
         <View style={{ padding: Spacing.md, alignItems: 'center' }}>
           <Text style={{ color: colors.textSecondary, marginBottom: Spacing.sm }}>
             {t('planner.emptyWeek')}
@@ -269,6 +283,33 @@ export default function PlannerScreen({ navigation }: any) {
               </View>
             </Pressable>
           )}
+        </View>
+      ) : (
+        <View style={styles.clearWeekContainer}>
+          <Pressable
+            onPress={handleClearWeek}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t('planner.clearWeekBtn')}
+            style={({ pressed }) => [
+              styles.clearWeekBtn,
+              {
+                backgroundColor: isDark ? colors.surfaceAlt : colors.dangerLight,
+                borderColor: colors.danger,
+                opacity: pressed ? 0.7 : 1,
+              },
+            ]}
+          >
+            <MaterialCommunityIcons
+              name="calendar-remove-outline"
+              size={16}
+              color={colors.danger}
+              style={{ marginRight: Spacing.xs }}
+            />
+            <Text style={[styles.clearWeekBtnText, { color: colors.danger }]}>
+              {t('planner.clearWeekBtn')}
+            </Text>
+          </Pressable>
         </View>
       )}
 
@@ -700,4 +741,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   btn: { padding: Spacing.md, borderRadius: BorderRadius.md, alignItems: 'center' },
+  clearWeekContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+  },
+  clearWeekBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+  },
+  clearWeekBtnText: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+  },
 });
