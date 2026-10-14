@@ -437,64 +437,71 @@ export default function HomeScreen({ navigation }: HomeProps) {
       <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={handleCancel}>
         <KeyboardAvoidingView
           style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>{t('home.newPeak')}</Text>
+          <ScrollView
+            style={styles.modalScrollView}
+            contentContainerStyle={styles.modalScrollContent}
+            keyboardShouldPersistTaps="handled"
+            bounces={false}
+          >
+            <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>{t('home.newPeak')}</Text>
 
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: colors.background,
-                  color: colors.text,
-                  borderColor: colors.border,
-                },
-              ]}
-              placeholder={t('home.peakName')}
-              placeholderTextColor={colors.textSecondary}
-              value={name}
-              onChangeText={setName}
-              autoFocus
-            />
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors.background,
+                    color: colors.text,
+                    borderColor: colors.border,
+                  },
+                ]}
+                placeholder={t('home.peakName')}
+                placeholderTextColor={colors.textSecondary}
+                value={name}
+                onChangeText={setName}
+                autoFocus
+              />
 
-            <TextInput
-              style={[
-                styles.input,
-                styles.inputDescription,
-                {
-                  backgroundColor: colors.background,
-                  color: colors.text,
-                  borderColor: colors.border,
-                },
-              ]}
-              placeholder={t('home.descOptional')}
-              placeholderTextColor={colors.textSecondary}
-              value={description}
-              onChangeText={setDescription}
-              multiline
-            />
+              <TextInput
+                style={[
+                  styles.input,
+                  styles.inputDescription,
+                  {
+                    backgroundColor: colors.background,
+                    color: colors.text,
+                    borderColor: colors.border,
+                  },
+                ]}
+                placeholder={t('home.descOptional')}
+                placeholderTextColor={colors.textSecondary}
+                value={description}
+                onChangeText={setDescription}
+                multiline
+              />
 
-            <View style={styles.modalButtons}>
-              <Pressable
-                style={[styles.modalButton, { backgroundColor: colors.background }]}
-                onPress={handleCancel}
-              >
-                <Text style={[styles.modalButtonText, { color: colors.textSecondary }]}>
-                  {t('common.cancel')}
-                </Text>
-              </Pressable>
+              <View style={styles.modalButtons}>
+                <Pressable
+                  style={[styles.modalButton, { backgroundColor: colors.background }]}
+                  onPress={handleCancel}
+                >
+                  <Text style={[styles.modalButtonText, { color: colors.textSecondary }]}>
+                    {t('common.cancel')}
+                  </Text>
+                </Pressable>
 
-              <Pressable
-                style={[styles.modalButton, { backgroundColor: colors.primary }]}
-                onPress={handleCreate}
-              >
-                <Text style={[styles.modalButtonText, { color: '#fff' }]}>
-                  {t('home.createPeak')}
-                </Text>
-              </Pressable>
+                <Pressable
+                  style={[styles.modalButton, { backgroundColor: colors.primary }]}
+                  onPress={handleCreate}
+                >
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>
+                    {t('home.createPeak')}
+                  </Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -553,6 +560,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: Spacing.lg,
+  },
+  modalScrollView: {
+    width: '100%',
+  },
+  modalScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContent: {
     width: '100%',

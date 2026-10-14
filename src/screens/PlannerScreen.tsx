@@ -404,101 +404,108 @@ export default function PlannerScreen({ navigation }: any) {
       >
         <KeyboardAvoidingView
           style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>
-              {t('planner.blockDetails')}
-            </Text>
+          <ScrollView
+            style={styles.modalScrollView}
+            contentContainerStyle={styles.modalScrollContent}
+            keyboardShouldPersistTaps="handled"
+            bounces={false}
+          >
+            <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                {t('planner.blockDetails')}
+              </Text>
 
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '600',
-                marginBottom: 4,
-                color: colors.textSecondary,
-              }}
-            >
-              {t('planner.taskDescription')}
-            </Text>
-            <TextInput
-              style={[
-                { borderWidth: 1, borderRadius: 12, padding: 8, fontSize: 16, marginBottom: 16 },
-                {
-                  backgroundColor: colors.background,
-                  color: colors.text,
-                  borderColor: colors.border,
-                },
-              ]}
-              placeholder={t('planner.taskDescPlaceholder')}
-              placeholderTextColor={colors.textSecondary}
-              value={editBlockDesc}
-              onChangeText={setEditBlockDesc}
-            />
-
-            <View style={{ flexDirection: 'column', gap: 12, marginTop: 16 }}>
-              <View style={{ flexDirection: 'row', gap: 12 }}>
-                <Pressable
-                  style={{
-                    flex: 1,
-                    paddingVertical: 12,
-                    borderRadius: 12,
-                    backgroundColor: colors.danger,
-                    alignItems: 'center',
-                  }}
-                  onPress={handleDeleteBlock}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>
-                    {t('common.delete')}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={{
-                    flex: 1,
-                    paddingVertical: 12,
-                    borderRadius: 12,
-                    backgroundColor: isDone ? colors.danger : colors.success,
-                    alignItems: 'center',
-                  }}
-                  onPress={handleToggleBlock}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>
-                    {isDone ? '✕ ' + t('planner.markTodo') : '✓ ' + t('planner.markDone')}
-                  </Text>
-                </Pressable>
-              </View>
-              <View style={{ flexDirection: 'row', gap: 12 }}>
-                <Pressable
-                  style={{
-                    flex: 1,
-                    paddingVertical: 12,
-                    borderRadius: 12,
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: '600',
+                  marginBottom: 4,
+                  color: colors.textSecondary,
+                }}
+              >
+                {t('planner.taskDescription')}
+              </Text>
+              <TextInput
+                style={[
+                  { borderWidth: 1, borderRadius: 12, padding: 8, fontSize: 16, marginBottom: 16 },
+                  {
                     backgroundColor: colors.background,
-                    alignItems: 'center',
-                  }}
-                  onPress={() => setEditBlockId(null)}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: colors.textSecondary }}>
-                    {t('common.cancel')}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={{
-                    flex: 1,
-                    paddingVertical: 12,
-                    borderRadius: 12,
-                    backgroundColor: colors.primary,
-                    alignItems: 'center',
-                  }}
-                  onPress={saveBlockDesc}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>
-                    {t('common.save')}
-                  </Text>
-                </Pressable>
+                    color: colors.text,
+                    borderColor: colors.border,
+                  },
+                ]}
+                placeholder={t('planner.taskDescPlaceholder')}
+                placeholderTextColor={colors.textSecondary}
+                value={editBlockDesc}
+                onChangeText={setEditBlockDesc}
+              />
+
+              <View style={{ flexDirection: 'column', gap: 12, marginTop: 16 }}>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <Pressable
+                    style={{
+                      flex: 1,
+                      paddingVertical: 12,
+                      borderRadius: 12,
+                      backgroundColor: colors.danger,
+                      alignItems: 'center',
+                    }}
+                    onPress={handleDeleteBlock}
+                  >
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>
+                      {t('common.delete')}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={{
+                      flex: 1,
+                      paddingVertical: 12,
+                      borderRadius: 12,
+                      backgroundColor: isDone ? colors.danger : colors.success,
+                      alignItems: 'center',
+                    }}
+                    onPress={handleToggleBlock}
+                  >
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>
+                      {isDone ? '✕ ' + t('planner.markTodo') : '✓ ' + t('planner.markDone')}
+                    </Text>
+                  </Pressable>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <Pressable
+                    style={{
+                      flex: 1,
+                      paddingVertical: 12,
+                      borderRadius: 12,
+                      backgroundColor: colors.background,
+                      alignItems: 'center',
+                    }}
+                    onPress={() => setEditBlockId(null)}
+                  >
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: colors.textSecondary }}>
+                      {t('common.cancel')}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={{
+                      flex: 1,
+                      paddingVertical: 12,
+                      borderRadius: 12,
+                      backgroundColor: colors.primary,
+                      alignItems: 'center',
+                    }}
+                    onPress={saveBlockDesc}
+                  >
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>
+                      {t('common.save')}
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -727,6 +734,8 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xs,
   },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalScrollView: { width: '100%' },
+  modalScrollContent: { flexGrow: 1, justifyContent: 'flex-end' },
   modalContent: {
     borderTopLeftRadius: BorderRadius.lg,
     borderTopRightRadius: BorderRadius.lg,

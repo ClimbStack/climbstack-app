@@ -8,6 +8,8 @@ import {
   TextInput,
   FlatList,
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeColors } from '../utils/useThemeColors';
@@ -110,7 +112,10 @@ export default function IconPicker({ visible, onSelect, onClose }: IconPickerPro
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
+      <KeyboardAvoidingView
+        style={[styles.overlay, { backgroundColor: colors.overlay }]}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         <View style={[styles.content, { backgroundColor: colors.surface }]}>
           <Text style={[styles.title, { color: colors.text }]}>{t('manage.selectIcon')}</Text>
 
@@ -156,7 +161,7 @@ export default function IconPicker({ visible, onSelect, onClose }: IconPickerPro
             </Text>
           </Pressable>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
