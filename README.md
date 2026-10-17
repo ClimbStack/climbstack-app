@@ -76,8 +76,8 @@ ClimbStack is officially in production on the Google Play Store for Android devi
   </a>
 </p>
 
-* **Package Name:** `com.gizano.levelup`
-* **Google Play Link:** [Download on Google Play](https://play.google.com/store/apps/details?id=com.gizano.levelup)
+- **Package Name:** `com.gizano.levelup`
+- **Google Play Link:** [Download on Google Play](https://play.google.com/store/apps/details?id=com.gizano.levelup)
 
 ---
 
