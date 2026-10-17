@@ -14,6 +14,12 @@
     <a href="https://codecov.io/gh/ClimbStack/climbstack-app"><img src="https://img.shields.io/codecov/c/github/ClimbStack/climbstack-app?style=for-the-badge&logo=codecov&logoColor=white" alt="Codecov" /></a>
   </p>
   <p><i>An open-source productivity engine, built by developers, for everyone.</i></p>
+
+  <p>
+    <a href="https://play.google.com/store/apps/details?id=com.gizano.levelup">
+      <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="70" />
+    </a>
+  </p>
 </div>
 
 ClimbStack is a mobile app for long-term goal tracking, built around the metaphor of **mountain climbing**: every goal is a peak to reach, every sub-goal is a base camp along the way. It includes a weekly planner to organize your week in blocks and eliminate _decision fatigue_.
@@ -60,7 +66,7 @@ ClimbStack is a mobile app for long-term goal tracking, built around the metapho
 
 ## 🚀 Quick Start & Installation
 
-### 📥 Install from Google Play (Recommended)
+### 📥 Install from Google Play
 
 ClimbStack is officially in production on the Google Play Store for Android devices:
 
