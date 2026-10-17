@@ -4,6 +4,7 @@
   <p><b>Gamify your goals. Conquer your peaks.</b></p>
 
   <p>
+    <a href="https://play.google.com/store/apps/details?id=com.gizano.levelup"><img src="https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white" alt="Google Play" /></a>
     <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
     <img src="https://img.shields.io/badge/Expo-1B1F23?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
@@ -57,9 +58,26 @@ ClimbStack is a mobile app for long-term goal tracking, built around the metapho
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start & Installation
 
-### Prerequisites
+### 📥 Install from Google Play (Recommended)
+
+ClimbStack is officially in production on the Google Play Store for Android devices:
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.gizano.levelup">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">
+  </a>
+</p>
+
+* **Package Name:** `com.gizano.levelup`
+* **Google Play Link:** [Download on Google Play](https://play.google.com/store/apps/details?id=com.gizano.levelup)
+
+---
+
+### 💻 Local Development Setup
+
+#### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18+)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
