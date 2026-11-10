@@ -1,5 +1,6 @@
 import { getLocales } from 'expo-localization';
 import { I18n } from 'i18n-js';
+import { achievementTranslations } from './achievementTranslations';
 
 export type SupportedLanguageCode = 'en' | 'it' | 'de' | 'fr' | 'es';
 
@@ -25,6 +26,7 @@ export function getSupportedLocale(lang?: string | null): SupportedLanguageCode 
 
 const translations = {
   en: {
+    achievements: achievementTranslations.en,
     tabs: {
       today: 'Today',
       peaks: 'Peaks',
@@ -254,6 +256,7 @@ const translations = {
     },
   },
   it: {
+    achievements: achievementTranslations.it,
     tabs: {
       today: 'Oggi',
       peaks: 'Vette',
@@ -485,6 +488,7 @@ const translations = {
     },
   },
   de: {
+    achievements: achievementTranslations.de,
     tabs: {
       today: 'Heute',
       peaks: 'Gipfel',
@@ -714,6 +718,7 @@ const translations = {
     },
   },
   fr: {
+    achievements: achievementTranslations.fr,
     tabs: {
       today: "Aujourd'hui",
       peaks: 'Sommets',
@@ -944,6 +949,7 @@ const translations = {
     },
   },
   es: {
+    achievements: achievementTranslations.es,
     tabs: {
       today: 'Hoy',
       peaks: 'Cimas',

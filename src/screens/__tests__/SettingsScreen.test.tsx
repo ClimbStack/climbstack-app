@@ -45,6 +45,10 @@ jest.mock('../../store/PlannerContext', () => ({
   usePlanner: jest.fn(),
 }));
 
+jest.mock('../../store/AchievementsContext', () => ({
+  useAchievements: () => ({ restoreBackup: (restore: () => Promise<void>) => restore() }),
+}));
+
 jest.mock('../../utils/useThemeColors', () => ({
   useThemeColors: jest.fn(),
 }));

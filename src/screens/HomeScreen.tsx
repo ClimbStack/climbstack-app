@@ -124,8 +124,22 @@ export default function HomeScreen({ navigation }: HomeProps) {
       title: 'ClimbStack',
       headerStyle: { backgroundColor: colors.surface },
       headerTintColor: colors.text,
+      headerRight: () => (
+        <Pressable
+          onPress={() => navigation.navigate('Achievements')}
+          accessibilityRole="button"
+          accessibilityLabel={t('achievements.title')}
+          hitSlop={Spacing.sm}
+          style={({ pressed }) => [
+            styles.achievementButton,
+            { backgroundColor: pressed ? colors.accentLight : colors.surfaceAlt },
+          ]}
+        >
+          <MaterialCommunityIcons name="trophy-outline" size={FontSize.lg} color={colors.accent} />
+        </Pressable>
+      ),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, locale]);
 
   const stats = computeStats(peaks, streak, lastActiveDate, totalCompletedHours);
 
@@ -511,6 +525,12 @@ export default function HomeScreen({ navigation }: HomeProps) {
 }
 
 const styles = StyleSheet.create({
+  achievementButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+  },
   container: {
     flex: 1,
   },

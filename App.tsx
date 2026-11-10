@@ -17,6 +17,9 @@ SplashScreen.preventAutoHideAsync();
 
 import { PeaksProvider } from './src/store/PeaksContext';
 import { PlannerProvider } from './src/store/PlannerContext';
+import { AchievementsProvider } from './src/store/AchievementsContext';
+import AchievementCelebration from './src/components/AchievementCelebration';
+import AchievementsScreen from './src/screens/AchievementsScreen';
 import { LocaleProvider, useLocale } from './src/store/LocaleContext';
 import { ThemeProvider } from './src/store/ThemeContext';
 import { Colors } from './src/utils/theme';
@@ -50,6 +53,7 @@ function VetteStack() {
       }}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Achievements" component={AchievementsScreen} />
       <Stack.Screen name="PeakDetail" component={PeakDetailScreen} />
     </Stack.Navigator>
   );
@@ -239,7 +243,10 @@ export default function App() {
         <LocaleProvider>
           <PeaksProvider>
             <PlannerProvider>
-              <RootNavigator />
+              <AchievementsProvider>
+                <RootNavigator />
+                <AchievementCelebration />
+              </AchievementsProvider>
             </PlannerProvider>
           </PeaksProvider>
         </LocaleProvider>

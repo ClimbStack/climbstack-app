@@ -73,6 +73,8 @@ const DEFAULT_CATEGORIES: Category[] = [
   },
 ];
 
+export const DEFAULT_CATEGORY_IDS = DEFAULT_CATEGORIES.map((category) => category.id);
+
 // Helper to migrate legacy emoji to icon names
 const migrateEmoji = (emoji: string) => {
   const map: Record<string, string> = {
@@ -89,6 +91,7 @@ const migrateEmoji = (emoji: string) => {
 };
 
 interface PlannerState {
+  plans: Record<string, WeeklyPlan>;
   categories: Category[];
   templates: BlockTemplate[];
   currentPlan: WeeklyPlan;
@@ -100,7 +103,7 @@ interface PlannerState {
 
 interface PlannerActions {
   changeWeek: (weekId: string) => void;
-  refreshData: () => Promise<void>;
+  refreshData: (replacePlans?: boolean) => Promise<void>;
   addCategory: (name: string, emoji: string, color: string, targetHours: number) => void;
   editCategory: (id: string, updates: Partial<Category>) => void;
   deleteCategory: (id: string) => void;
@@ -186,56 +189,57 @@ export function PlannerProvider({ children }: { children: React.ReactNode }) {
     }
   }, [realWeekId, plans, isLoading]);
 
-  const refreshData = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const realWeek = getCurrentWeekId();
-      setRealWeekId(realWeek);
-      const [cats, tmpl, currentPlanLoaded, realPlanLoaded, previousPlan] = await Promise.all([
-        loadCategories(),
-        loadTemplates(),
-        loadWeeklyPlan(currentWeekId),
-        currentWeekId === realWeek ? Promise.resolve(null) : loadWeeklyPlan(realWeek),
-        loadWeeklyPlan(getPrevWeekId(currentWeekId)),
-      ]);
-      if (cats.length > 0) {
-        const legacyOtherNames = ['altro', 'other', 'sonstiges', 'autre', 'otro'];
-        const merged = cats.map((c) => {
-          let name = c.name;
-          if (
-            !c.isCustomName &&
-            (c.id === 'lettura' || c.id === 'progetto') &&
-            legacyOtherNames.includes(name.trim().toLowerCase())
-          ) {
-            name = c.id === 'lettura' ? t('categories.reading') : t('categories.project');
-          }
-          return {
-            ...c,
-            name,
-            emoji: migrateEmoji(c.emoji),
-          };
-        });
-        setCategories(merged);
-      } else {
-        setCategories(DEFAULT_CATEGORIES);
+  const refreshData = useCallback(
+    async (replacePlans = false) => {
+      setIsLoading(true);
+      try {
+        const realWeek = getCurrentWeekId();
+        setRealWeekId(realWeek);
+        const [cats, tmpl, currentPlanLoaded, realPlanLoaded, previousPlan] = await Promise.all([
+          loadCategories(),
+          loadTemplates(),
+          loadWeeklyPlan(currentWeekId),
+          currentWeekId === realWeek ? Promise.resolve(null) : loadWeeklyPlan(realWeek),
+          loadWeeklyPlan(getPrevWeekId(currentWeekId)),
+        ]);
+        if (cats.length > 0) {
+          const legacyOtherNames = ['altro', 'other', 'sonstiges', 'autre', 'otro'];
+          const merged = cats.map((c) => {
+            let name = c.name;
+            if (
+              !c.isCustomName &&
+              (c.id === 'lettura' || c.id === 'progetto') &&
+              legacyOtherNames.includes(name.trim().toLowerCase())
+            ) {
+              name = c.id === 'lettura' ? t('categories.reading') : t('categories.project');
+            }
+            return {
+              ...c,
+              name,
+              emoji: migrateEmoji(c.emoji),
+            };
+          });
+          setCategories(merged);
+        } else {
+          setCategories(DEFAULT_CATEGORIES);
+        }
+        setTemplates(tmpl);
+        const newPlans: Record<string, WeeklyPlan> = {};
+        newPlans[currentWeekId] = currentPlanLoaded || { weekId: currentWeekId, blocks: [] };
+        if (realWeek !== currentWeekId) {
+          newPlans[realWeek] = realPlanLoaded || { weekId: realWeek, blocks: [] };
+        }
+        if (replacePlans) savedPlansRef.current = {};
+        setPlans((prev) => (replacePlans ? newPlans : { ...newPlans, ...prev }));
+        setHasPreviousWeekBlocks((previousPlan?.blocks.length ?? 0) > 0);
+      } catch (e) {
+        console.error('Errore caricamento planner:', e);
+      } finally {
+        setIsLoading(false);
       }
-      setTemplates(tmpl);
-      const newPlans: Record<string, WeeklyPlan> = {};
-      newPlans[currentWeekId] = currentPlanLoaded || { weekId: currentWeekId, blocks: [] };
-      if (realWeek !== currentWeekId) {
-        newPlans[realWeek] = realPlanLoaded || { weekId: realWeek, blocks: [] };
-      }
-      setPlans((prev) => ({
-        ...newPlans,
-        ...prev,
-      }));
-      setHasPreviousWeekBlocks((previousPlan?.blocks.length ?? 0) > 0);
-    } catch (e) {
-      console.error('Errore caricamento planner:', e);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentWeekId]);
+    },
+    [currentWeekId]
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -690,6 +694,7 @@ export function PlannerProvider({ children }: { children: React.ReactNode }) {
   return (
     <PlannerContext.Provider
       value={{
+        plans,
         categories,
         templates,
         currentPlan,

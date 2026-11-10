@@ -61,6 +61,24 @@ export async function loadWeeklyPlan(weekId: string): Promise<WeeklyPlan | null>
   return JSON.parse(raw) as WeeklyPlan;
 }
 
+export async function loadAllWeeklyPlans(): Promise<WeeklyPlan[]> {
+  const keys = await AsyncStorage.getAllKeys();
+  const planKeys = keys.filter(
+    (key) =>
+      key.startsWith(KEYS.WEEKLY_PLAN_PREFIX) || key.startsWith(LEGACY_KEYS.WEEKLY_PLAN_PREFIX)
+  );
+  const entries = await AsyncStorage.multiGet(planKeys);
+  const plans = new Map<string, WeeklyPlan>();
+  for (const [key, raw] of entries) {
+    if (!raw) continue;
+    const plan = JSON.parse(raw) as WeeklyPlan;
+    if (!plans.has(plan.weekId) || key.startsWith(KEYS.WEEKLY_PLAN_PREFIX)) {
+      plans.set(plan.weekId, plan);
+    }
+  }
+  return [...plans.values()];
+}
+
 function scrubPlanBlocks(
   blocks: ScheduledBlock[],
   templateIds: string[],
