@@ -1,6 +1,9 @@
 import React from 'react';
-import { Linking } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { Alert, Linking } from 'react-native';
+import { act, render, fireEvent } from '@testing-library/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system/legacy';
 import SettingsScreen from '../SettingsScreen';
 import { usePeaks } from '../../store/PeaksContext';
 import { usePlanner } from '../../store/PlannerContext';
@@ -8,6 +11,7 @@ import { useThemeColors } from '../../utils/useThemeColors';
 import { useLocale } from '../../store/LocaleContext';
 import { Colors } from '../../utils/theme';
 import { t } from '../../utils/i18n';
+import { emptyAchievementProgress } from '../../utils/achievements';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   jest.requireActual('@react-native-async-storage/async-storage/jest/async-storage-mock')
@@ -45,6 +49,10 @@ jest.mock('../../store/PlannerContext', () => ({
   usePlanner: jest.fn(),
 }));
 
+jest.mock('../../store/AchievementsContext', () => ({
+  useAchievements: () => ({ restoreBackup: mockRestoreBackup }),
+}));
+
 jest.mock('../../utils/useThemeColors', () => ({
   useThemeColors: jest.fn(),
 }));
@@ -57,6 +65,7 @@ const mockUsePeaks = usePeaks as jest.Mock;
 const mockUsePlanner = usePlanner as jest.Mock;
 const mockUseThemeColors = useThemeColors as jest.Mock;
 const mockUseLocale = useLocale as jest.Mock;
+const mockRestoreBackup = jest.fn((restore: () => Promise<void>) => restore());
 
 describe('SettingsScreen', () => {
   const mockChangeLocale = jest.fn();
@@ -252,6 +261,105 @@ describe('SettingsScreen', () => {
 
     const { getByText } = await render(<SettingsScreen />);
     expect(getByText(t('settings.themeSystem'))).toBeTruthy();
+  });
+
+  describe('restoring achievement backups', () => {
+    const restoredData = {
+      '@climbstack/achievements': JSON.stringify({
+        ...emptyAchievementProgress(),
+        unlocked: { firstBlock: '2026-11-09T12:00:00.000Z' },
+      }),
+      '@climbstack/peaks': '[]',
+      '@climbstack/empty': null,
+    };
+
+    beforeEach(async () => {
+      jest.useFakeTimers();
+      await AsyncStorage.clear();
+      jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+      (DocumentPicker.getDocumentAsync as jest.Mock).mockResolvedValue({
+        canceled: false,
+        assets: [{ uri: 'file:///backup.json' }],
+      });
+      (FileSystem.readAsStringAsync as jest.Mock).mockResolvedValue(
+        JSON.stringify({ data: restoredData })
+      );
+    });
+
+    afterEach(() => {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+      jest.restoreAllMocks();
+    });
+
+    const confirmImport = async () => {
+      const view = await render(<SettingsScreen />);
+      await fireEvent.press(view.getByText(t('settings.importBtn')));
+      const buttons = (Alert.alert as jest.Mock).mock.calls[0][2];
+      const confirm = buttons.find((button: { text: string }) => button.text === 'OK');
+      let importing!: Promise<void>;
+      await act(async () => {
+        importing = confirm.onPress();
+      });
+      await act(async () => {
+        jest.advanceTimersByTime(1000);
+        await importing;
+      });
+      return view;
+    };
+
+    it('replaces current and legacy app data inside the achievement restore boundary', async () => {
+      await AsyncStorage.multiSet([
+        ['@climbstack/achievements', 'old achievements'],
+        ['@levelup/week/2026-01-05', 'old week'],
+        ['other-app/preference', 'keep'],
+      ]);
+      await confirmImport();
+      expect(mockRestoreBackup).toHaveBeenCalledTimes(1);
+      expect(await AsyncStorage.getItem('@climbstack/achievements')).toBe(
+        restoredData['@climbstack/achievements']
+      );
+      expect(await AsyncStorage.getItem('@levelup/week/2026-01-05')).toBeNull();
+      expect(await AsyncStorage.getItem('other-app/preference')).toBe('keep');
+      expect(await AsyncStorage.getItem('@climbstack/empty')).toBeNull();
+      expect(mockRefreshPeaks).toHaveBeenCalledTimes(1);
+      expect(mockRefreshPlanner).toHaveBeenCalledWith(true);
+      expect(Alert.alert).toHaveBeenLastCalledWith(
+        t('settings.importConfirmTitle'),
+        t('settings.importSuccess')
+      );
+    });
+
+    it('restores into an empty store without removing unrelated preferences', async () => {
+      await AsyncStorage.setItem('other-app/preference', 'keep');
+      const remove = AsyncStorage.multiRemove as jest.Mock;
+      remove.mockClear();
+      await confirmImport();
+      expect(remove).not.toHaveBeenCalled();
+      expect(await AsyncStorage.getItem('@climbstack/peaks')).toBe('[]');
+      expect(await AsyncStorage.getItem('other-app/preference')).toBe('keep');
+      expect(mockRefreshPlanner).toHaveBeenCalledWith(true);
+    });
+
+    it('leaves progress untouched when the file picker is cancelled', async () => {
+      await AsyncStorage.setItem('@climbstack/achievements', 'existing progress');
+      (DocumentPicker.getDocumentAsync as jest.Mock).mockResolvedValue({ canceled: true });
+      await confirmImport();
+      expect(mockRestoreBackup).not.toHaveBeenCalled();
+      expect(await AsyncStorage.getItem('@climbstack/achievements')).toBe('existing progress');
+      expect(mockRefreshPlanner).not.toHaveBeenCalled();
+    });
+
+    it('reports a failed restore and leaves the import control usable', async () => {
+      mockRestoreBackup.mockRejectedValueOnce(new Error('Restore failed'));
+      const view = await confirmImport();
+      expect(Alert.alert).toHaveBeenLastCalledWith(
+        t('settings.exportErrorTitle'),
+        expect.stringContaining('Restore failed')
+      );
+      expect(mockRefreshPlanner).not.toHaveBeenCalled();
+      expect(view.getByText(t('settings.importBtn'))).toBeTruthy();
+    });
   });
 
   it('opens and closes replay tutorial onboarding modal', async () => {

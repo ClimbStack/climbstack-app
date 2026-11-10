@@ -1,5 +1,6 @@
 export type RootStackParamList = {
   Home: undefined;
+  Achievements: undefined;
   PeakDetail: { peakId: string };
 };
 

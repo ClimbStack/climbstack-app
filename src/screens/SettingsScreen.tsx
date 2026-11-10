@@ -23,6 +23,7 @@ import { t, SUPPORTED_LANGUAGES, getSupportedLocale } from '../utils/i18n';
 import { useLocale } from '../store/LocaleContext';
 import { usePeaks } from '../store/PeaksContext';
 import { usePlanner } from '../store/PlannerContext';
+import { useAchievements } from '../store/AchievementsContext';
 import OnboardingModal from '../components/OnboardingModal';
 
 interface ThemeOption {
@@ -46,6 +47,7 @@ export default function SettingsScreen() {
   const { locale, changeLocale } = useLocale();
   const { refreshData: refreshPeaks } = usePeaks();
   const { refreshData: refreshPlanner } = usePlanner();
+  const { restoreBackup } = useAchievements();
   const activeLang = getSupportedLocale(locale);
   const currentLanguageItem =
     SUPPORTED_LANGUAGES.find((item) => item.code === activeLang) ?? SUPPORTED_LANGUAGES[0];
@@ -131,17 +133,19 @@ export default function SettingsScreen() {
                 string,
               ][];
 
-              const allKeys = await AsyncStorage.getAllKeys();
-              const appKeys = allKeys.filter(
-                (k) => k.startsWith('@climbstack/') || k.startsWith('@levelup/')
-              );
-              if (appKeys.length > 0) {
-                await AsyncStorage.multiRemove(appKeys);
-              }
+              await restoreBackup(async () => {
+                const allKeys = await AsyncStorage.getAllKeys();
+                const appKeys = allKeys.filter(
+                  (k) => k.startsWith('@climbstack/') || k.startsWith('@levelup/')
+                );
+                if (appKeys.length > 0) {
+                  await AsyncStorage.multiRemove(appKeys);
+                }
 
-              await AsyncStorage.multiSet(entries);
-              await refreshPeaks();
-              await refreshPlanner();
+                await AsyncStorage.multiSet(entries);
+                await refreshPeaks();
+                await refreshPlanner(true);
+              });
               Alert.alert(
                 t('settings.importConfirmTitle'),
                 t('settings.importSuccess') || 'Import successful!'

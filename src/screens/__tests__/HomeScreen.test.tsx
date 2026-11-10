@@ -137,6 +137,7 @@ describe('HomeScreen', () => {
         title: 'ClimbStack',
         headerStyle: { backgroundColor: Colors.light.surface },
         headerTintColor: Colors.light.text,
+        headerRight: expect.any(Function),
       });
     });
 
@@ -152,6 +153,7 @@ describe('HomeScreen', () => {
         title: 'ClimbStack',
         headerStyle: { backgroundColor: Colors.dark.surface },
         headerTintColor: Colors.dark.text,
+        headerRight: expect.any(Function),
       });
     });
   });
