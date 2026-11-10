@@ -117,7 +117,7 @@ The time-blocking that solves the original problem: "I don't know what to do".
 
 > These features only exist here. Do not touch until Phase 2 is stable and used daily for at least 2 weeks.
 
-- [ ] **Achievements/Badges**: Unlockable trophies every X meters climbed (e.g. "Everest Base Camp - 5364m", "Mont Blanc - 4809m")
+- [x] **Achievements/Badges**: Unlockable trophies for altitude, peaks, blocks, categories, and streaks (#194)
 - [ ] **Personal Inventory**: Track items, electronics, and important belongings (useful for keeping track of maintenance, warranties, etc.)
 - [ ] **Onboarding Flow**: Initial setup questionnaire (with skip option) to configure default categories, first peaks, and weekly targets
 - [ ] **Quality Assurance**: Integrate strict code quality checks (e.g., SonarCloud) into the CI pipeline to ensure long-term maintainability
