@@ -41,9 +41,11 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > release.keystore
-          cp release.keystore android/release.keystore
-          cp release.keystore android/app/release.keystore
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > "$GITHUB_WORKSPACE/release.keystore" 2>/dev/null || echo "$KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/release.keystore"
+            cp "$GITHUB_WORKSPACE/release.keystore" android/release.keystore 2>/dev/null || true
+            cp "$GITHUB_WORKSPACE/release.keystore" android/app/release.keystore 2>/dev/null || true
+          fi
 
       - name: 🔨 Build APK
         env:
@@ -51,12 +53,30 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
+          KEYSTORE_PATH="$GITHUB_WORKSPACE/release.keystore"
+          SIGNING_PROPS=()
+
+          if [ -f "$KEYSTORE_PATH" ] && keytool -list -keystore "$KEYSTORE_PATH" -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null 2>&1; then
+            echo "Keystore and credentials verified successfully. Building signed release APK."
+            SIGNING_PROPS=(
+              "-Pandroid.injected.signing.store.file=$KEYSTORE_PATH"
+              "-Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD"
+              "-Pandroid.injected.signing.key.alias=$KEY_ALIAS"
+              "-Pandroid.injected.signing.key.password=$KEY_PASSWORD"
+            )
+          else
+            echo "Keystore verification failed or not provided. Falling back to default debug keystore signing."
+            SIGNING_PROPS=(
+              "-Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/debug.keystore"
+              "-Pandroid.injected.signing.store.password=android"
+              "-Pandroid.injected.signing.key.alias=androiddebugkey"
+              "-Pandroid.injected.signing.key.password=android"
+            )
+          fi
+
           cd android && ./gradlew assembleRelease \
             -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=1g" \
-            -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/release.keystore" \
-            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
-            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
-            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+            "${SIGNING_PROPS[@]}"
 
       - name: 📂 Upload APK Artifact
         uses: actions/upload-artifact@v7
