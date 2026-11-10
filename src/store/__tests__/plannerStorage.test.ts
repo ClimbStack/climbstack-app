@@ -5,6 +5,7 @@ import {
   loadCategories,
   loadTemplates,
   loadWeeklyPlan,
+  loadAllWeeklyPlans,
   saveCategories,
   saveTemplates,
   saveWeeklyPlan,
@@ -117,6 +118,37 @@ describe('plannerStorage', () => {
 
       expect(await blockIds('2026-10-05')).toEqual(['a']);
       expect(await blockIds('2026-10-12')).toEqual(['b']);
+    });
+  });
+
+  describe('achievement history', () => {
+    test('returns no history when storage is empty', async () => {
+      expect(await loadAllWeeklyPlans()).toEqual([]);
+    });
+
+    test('includes current and legacy weeks while preferring a migrated copy', async () => {
+      const migrated = makePlan('2026-10-05', [makeBlock({ id: 'migrated' })]);
+      const legacy = makePlan('2026-10-05', [makeBlock({ id: 'legacy' })]);
+      const older = makePlan('2026-09-28', [makeBlock({ id: 'older' })]);
+      await AsyncStorage.multiSet([
+        ['@climbstack/week/2026-10-05', JSON.stringify(migrated)],
+        ['@levelup/week/2026-10-05', JSON.stringify(legacy)],
+        ['@levelup/week/2026-09-28', JSON.stringify(older)],
+        ['@climbstack/week/empty', ''],
+        ['@climbstack/categories', 'not a plan'],
+        ['other-app/week/2026-10-05', 'not our plan'],
+      ]);
+      const save = AsyncStorage.setItem as jest.Mock;
+      save.mockClear();
+      expect(await loadAllWeeklyPlans()).toEqual([migrated, older]);
+      expect(save).not.toHaveBeenCalled();
+    });
+
+    test('rejects malformed history without replacing the original data', async () => {
+      const key = '@climbstack/week/2026-10-05';
+      await AsyncStorage.setItem(key, '{broken');
+      await expect(loadAllWeeklyPlans()).rejects.toThrow();
+      expect(await AsyncStorage.getItem(key)).toBe('{broken');
     });
   });
 
